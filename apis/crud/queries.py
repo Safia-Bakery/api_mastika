@@ -114,6 +114,21 @@ def get_selval(db:Session,id,content,value,status,subcat_id):
         query = query.filter(models.SelectValues.subcat_id==subcat_id)
     return query.all()
 
+
+
+def update_select_value(db:Session,form_data:api_schema.UpdateSelectValue):
+    query = db.query(models.SelectValues).filter(models.SelectValues.id==form_data.id).first()
+    if form_data.content is not None:
+        query.content = form_data.content
+    if form_data.value is not None:
+        query.value = form_data.value
+    if form_data.status is not None:
+        query.status = form_data.status
+    db.commit()
+    db.refresh(query)
+    return query
+
+
 def create_childselect(db:Session,form_data:api_schema.ChildSelCreate):
     query = models.ChildSelVal(content=form_data.content,selval_id=form_data.selval_id,value=form_data.value)
     db.add(query)
@@ -135,6 +150,18 @@ def filter_child_selval(db:Session,content,value,selval_id,status,id):
     if id is not None:
         query = query.filter(models.ChildSelVal.id==id)
     return query.all()
+
+def update_child_selvalue(db:Session,form_data:api_schema.UpdateChildSelVal):
+    query = db.query(models.ChildSelVal).filter(models.ChildSelVal.id==form_data.id).first()
+    if form_data.content is not None:
+        query.content =form_data.content
+    if form_data.status is not None:
+        query.status = form_data.status
+    if form_data.value is not None:
+        query.value = form_data.value
+    db.commit()
+    db.refresh(query)
+    return query
 
 
 def create_order(db:Session,category_id,user_id):
@@ -162,7 +189,6 @@ def get_values_oforder(db:Session,id):
     query = db.query(models.Value).filter(models.Value.order_id==id).all()
     return query
 
-
-def get_from_subcategoryorder(db:Session,id):
-    query = db.query(models.Value).filter(models.Value.order_id==id).all()
+def getOrderList(db:Session):
+    query = db.query(models.Order).all()
     return query

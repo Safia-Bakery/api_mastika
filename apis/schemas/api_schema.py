@@ -72,6 +72,8 @@ class SelectViewGet(BaseModel):
         orm_mode=True
 
 
+
+
 class SelValFilter(BaseModel):
     id:Optional[int]=None
     content:Optional[str]=None
@@ -80,6 +82,12 @@ class SelValFilter(BaseModel):
     subcat_id:Optional[int]=None
     
 
+
+class UpdateSelectValue(BaseModel):
+    id:int
+    content:Optional[str]=None
+    value:Optional[str]=None
+    status:Optional[int]=None
 
 
 class ChildSelCreate(BaseModel):
@@ -108,6 +116,15 @@ class FilterChildSelVal(BaseModel):
     content :Optional[str]=None
     value:Optional[str]=None
     status:Optional[int]=None
+
+class UpdateChildSelVal(BaseModel):
+    id:int
+    content:Optional[str]=None
+    value:Optional[str]=None
+    status:Optional[int]=None
+
+
+
 
 class GetChildSelValWithId(BaseModel):
     id:int
@@ -176,5 +193,5 @@ class BaseOrder(BaseModel):
     order:list[GetOrdervsId]
     value:list[OrderFromValue]
     class Config:
-        orm_mode=True
+        orm_mode=True 
 

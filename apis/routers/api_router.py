@@ -75,6 +75,13 @@ async def filter_select_val(id:Optional[int]=None,content:Optional[str]=None,val
     return query
 
 
+@api_router.put('/v1/sel/value',response_model=api_schema.SelectViewGet)
+async def update_select_val(form_data:api_schema.UpdateSelectValue,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query= queries.update_select_value(db=db,form_data=form_data)
+    return query
+
+
+
 @api_router.post('/v1/child/sel/value',response_model=api_schema.GetChildSelVal)
 async def create_child_select(form_data:api_schema.ChildSelCreate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     query = queries.create_childselect(db=db,form_data=form_data)
@@ -87,6 +94,10 @@ async def filter_child_selval(id:Optional[int]=None,selval_id:Optional[int]=None
     return query
 
 
+@api_router.put('/v1/child/sel/value',response_model=api_schema.GetChildSelVal)
+async def update_child_selval(form_data:api_schema.UpdateChildSelVal,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = queries.update_child_selvalue(db=db,form_data=form_data)
+    return query
 
 @api_router.put('/v1/iiko/cakes',response_model=list[api_schema.GetCategory])
 async def iiko_get_cakes(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
@@ -149,14 +160,18 @@ async def get_all_typeofdata(request:Request,db:Session=Depends(get_db),request_
     return {'success':True}
 
 
-@api_router.get('/v1/orders',response_model=api_schema.BaseOrder)
-async def get_one_order(id:int,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
-    order_query = queries.get_order_with_id(db=db,id=id)
-    value_query = queries.get_values_oforder(db=db,id=id)
-    #order_schema = parse_obj_as(list[api_schema.GetOrdervsId],list[order_query])
-    #order_schema = [api_schema.GetOrdervsId(items=items.id,order_vs_user=items.order_vs_user,order_vs_category=items.order_vs_category) for items in order_query]
-    #value_schema= [api_schema.OrderFromValue(id=i.id,content=i.content, order_id=i.order_id,subcat_id=i.subcat_id,value_vs_subcat=i.value_vs_subcat,select_id=i.select_id,value_vs_select=i.value_vs_select,selchild_id=i.value_vs_selchild) for i in value_query]
-    return {'order':order_query,'value':value_query}# #{'order':order_schema,'value':value_schema}
+@api_router.get('/v1/orders',response_model=Union[api_schema.BaseOrder,list[api_schema.GetOrdervsId]])
+async def get_one_order(id:Optional[int]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    if id is not None:
+        order_query = queries.get_order_with_id(db=db,id=id)
+        value_query = queries.get_values_oforder(db=db,id=id)
+
+        return {'order':order_query,'value':value_query}
+    else:
+        query = queries.getOrderList(db=db)
+        return query
+
+
 
 
 
