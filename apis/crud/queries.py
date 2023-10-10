@@ -84,7 +84,7 @@ def update_subcategory(db:Session,form_data:api_schema.UpdateSubCat):
     query = db.query(models.SubCategory).filter(models.SubCategory.id==form_data.id).first()
     if query:
         if form_data.contenttype_id is not None:
-            query.contenttype_id==form_data.contenttype_id
+            query.contenttype_id=form_data.contenttype_id
         if form_data.name is not None:
             query.name = form_data.name
         if form_data.status is not None:
@@ -148,9 +148,21 @@ def create_order(db:Session,category_id,user_id):
 def create_value_order(db:Session,table):
     table = table
     db.add(table)
-    db.commit
+    db.commit()
     db.refresh(table)
     return table
 
 
+def get_order_with_id(db:Session,id):
+    query = db.query(models.Order).filter(models.Order.id==id).all()
+    return query
 
+
+def get_values_oforder(db:Session,id):
+    query = db.query(models.Value).filter(models.Value.order_id==id).all()
+    return query
+
+
+def get_from_subcategoryorder(db:Session,id):
+    query = db.query(models.Value).filter(models.Value.order_id==id).all()
+    return query

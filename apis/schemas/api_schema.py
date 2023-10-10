@@ -1,6 +1,7 @@
 from typing import Optional ,Literal
 from pydantic import BaseModel,Field
 from pydantic import validator
+from users.schemas.user_schema import User
 
 class CreateCategory(BaseModel):
     name :str
@@ -50,7 +51,7 @@ class UpdateSubCat(BaseModel):
     id:int
     contenttype_id:Optional[int]=None
     name:Optional[str]=None
-    status:Optional[str]=None
+    status:Optional[int]=None
     class Config:
         orm_mode=True
 
@@ -113,7 +114,6 @@ class GetChildSelValWithId(BaseModel):
     content:Optional[str]=None
     value:Optional[str]=None
     status:Optional[int]=None
-
     class Config:
         orm_mode=True
 
@@ -149,3 +149,32 @@ class GetCategoryWithId(BaseModel):
     category_vs_subcategory:list[GetSubCatWithId]
     class Config:
         orm_mode=True
+
+
+class GetOrdervsId(BaseModel):
+    id:int
+    order_vs_user:User
+    order_vs_category:GetCategory
+    class Config:
+        orm_mode=True
+
+class OrderFromValue(BaseModel):
+    id:int
+    content:Optional[str]
+    order_id:int
+    subcat_id:int
+    value_vs_subcat:GetSubCat
+    select_id:Optional[int]=None
+    value_vs_select:Optional[SelectViewGet]=None
+    selchild_id:Optional[int]=None
+    value_vs_selchild:Optional[GetChildSelValWithId]=None
+    class Config:
+        orm_mode=True
+
+
+class BaseOrder(BaseModel):
+    order:list[GetOrdervsId]
+    value:list[OrderFromValue]
+    class Config:
+        orm_mode=True
+

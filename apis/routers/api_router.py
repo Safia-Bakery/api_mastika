@@ -1,12 +1,14 @@
 from apis.schemas import api_schema
 from fastapi import APIRouter
+from pydantic import parse_obj_as
+
 from users.utils.user_micro import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
 from apis.crud import queries
 from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
-from typing import Optional
+from typing import Optional,Union
 from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename
 from fastapi import Request
 import shutil
@@ -121,7 +123,6 @@ async def get_all_typeofdata(request:Request,db:Session=Depends(get_db),request_
             subcat_id = re.findall(r'\d+',field_name)[0]
             table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,content=generated_filename)
             queries.create_value_order(db=db,table=table_data)
-            
             with open('files/'+generated_filename, 'wb+') as f:
                 shutil.copyfileobj(form_data[field_name].file,f)
         if 'selval' in field_name:
@@ -145,9 +146,18 @@ async def get_all_typeofdata(request:Request,db:Session=Depends(get_db),request_
             subcat_id = field_id[0]
             table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,content=field_value)
             queries.create_value_order(db=db,table=table_data)
-    return {
-        "form_data": dict(form_data)  # Convert to a dictionary
-    }
+    return {'success':True}
+
+
+@api_router.get('/v1/orders',response_model=api_schema.BaseOrder)
+async def get_one_order(id:int,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    order_query = queries.get_order_with_id(db=db,id=id)
+    value_query = queries.get_values_oforder(db=db,id=id)
+    #order_schema = parse_obj_as(list[api_schema.GetOrdervsId],list[order_query])
+    #order_schema = [api_schema.GetOrdervsId(items=items.id,order_vs_user=items.order_vs_user,order_vs_category=items.order_vs_category) for items in order_query]
+    #value_schema= [api_schema.OrderFromValue(id=i.id,content=i.content, order_id=i.order_id,subcat_id=i.subcat_id,value_vs_subcat=i.value_vs_subcat,select_id=i.select_id,value_vs_select=i.value_vs_select,selchild_id=i.value_vs_selchild) for i in value_query]
+    return {'order':order_query,'value':value_query}# #{'order':order_schema,'value':value_schema}
+
 
 
 

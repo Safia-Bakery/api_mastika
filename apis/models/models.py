@@ -56,6 +56,7 @@ class SubCategory(Base):
     subcat_vs_selval = relationship('SelectValues',back_populates='selval_vs_subcat')
 
 
+
 class SelectValues(Base):
     __tablename__ = 'select_values'
     id =Column(Integer,primary_key=True,index=True)
