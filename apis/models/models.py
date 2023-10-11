@@ -18,11 +18,34 @@ class Category(Base):
     category_vs_subcategory = relationship('SubCategory',back_populates='subcategory_vs_category')
 
 
+"""
+firstly_payment( 1 = yes, 0=no)
+payment_type (0=cash, 1=payme, 2=click)
+system (0=mastika otdel, 1=telegram bot, 2=sayt)
+status (0=new created, 1= accepted, 2=rejected)
+is_delivery (1=yes , 0=No)
+"""
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer,primary_key=True,index=True)
+    order_user = Column(String,nullable=True)
     phone_number = Column(String,nullable=True)
+    extra_number = Column(String,nullable=True)
     location = Column(String,nullable=True)
+    payment_type = Column(Integer)
+    firstly_payment = Column(Integer)
+    is_delivery = Column(Integer)
+    comment = Column(String,nullable=True)
+    reject_reason = Column(String,nullable=True)
+    created_at = Column(DateTime(timezone=True),default=func.now())
+    updated_at = Column(DateTime(timezone=True),nullable=True)
+    deliver_date = Column(DateTime(timezone=True))
+    status = Column(Integer,default=0)
+    product_order = relationship('OrderProducts',back_populates='order_product')
+    address  = Column(String,nullable=True)
+    apartment =Column(String,nullable=True)
+    home = Column(String,nullable=True)
+    near_to = Column(String,nullable=True)
     department_id = Column(UUID(as_uuid=True),ForeignKey('departments.id'),nullable=True)
     order_br = relationship('Departments',back_populates='department_br')
     user_id = Column(Integer,ForeignKey('users.id'))
@@ -32,6 +55,15 @@ class Order(Base):
     order_vs_value = relationship('Value',back_populates='value_vs_order')
 
 
+class OrderProducts(Base):
+    __tablename__='orderproducts'
+    id = Column(Integer,primary_key=True,index=True)
+    order_id = Column(Integer,ForeignKey('orders.id'))
+    order_product = relationship('Order',back_populates='product_order')
+    product_id = Column(UUID(as_uuid=True),ForeignKey('products.id'))
+    order_vs_product = relationship('Products',back_populates='product_vs_order')
+    comment = Column(String,nullable=True)
+    amount = Column(Integer)
 
 
 
@@ -159,6 +191,7 @@ class Products(Base):
     group_id = Column(UUID(as_uuid=True),ForeignKey('groups.id'))
     product_r = relationship('Groups',back_populates='group_r')
     price = Column(Float,nullable=True)
+    product_vs_order = relationship('OrderProducts',back_populates='order_vs_product')
 
 
 

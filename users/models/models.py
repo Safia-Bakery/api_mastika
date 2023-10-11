@@ -24,6 +24,7 @@ class Users(Base):
     last_name = Column(String,nullable=True)
     created_at = Column(DateTime(timezone=True),default=func.now())
     status = Column(Integer,default=0)
+    is_client = Column(Integer,default=0)
     user_vs_order = relationship('Order',back_populates='order_vs_user')
 
 

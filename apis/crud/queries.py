@@ -166,12 +166,33 @@ def update_child_selvalue(db:Session,form_data:api_schema.UpdateChildSelVal):
     db.refresh(query)
     return query
 
-def create_order(db:Session,category_id,user_id,phone_number,location,department):
-    query = models.Order(category_id=category_id,user_id=user_id,phone_number=phone_number,location=location,department=department)
+def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
+    query = models.Order(order_user=form_data.order_user,phone_number=form_data.phone_number,extra_number=form_data.extra_number,location=form_data.location,payment_type=form_data.payment_type,
+                         firstly_payment=form_data.firstly_payment,
+                         is_delivery=form_data.is_delivery,
+                         comment=form_data.comment,
+                         deliver_date=form_data.deliver_date,
+                         address=form_data.address,
+                         apartment=form_data.apartment,
+                         home=form_data.home,
+                         near_to=form_data.near_to,
+                         department_id=form_data.department_id,
+                         user_id=user_id,
+                         category_id=form_data.category_id)
+
     db.add(query)
     db.commit()
     db.refresh(query)
     return query
+
+
+def create_order_products(db:Session,form_data:api_schema.OrderProducts):
+    query = models.OrderProducts(order_id=form_data.order_id,product_id=form_data.product_id,comment=form_data.comment,amount=form_data.amount)
+    db.add(query)
+    db.commit()
+    db.refresh(query)
+    return query
+
 
 
 def create_value_order(db:Session,table):
@@ -254,11 +275,15 @@ def add_products(db:Session,id,name,producttype,groud_id,price):
 def get_product_groups(db:Session,id:Optional[UUID]=None,name:Optional[str]=None):
     query = db.query(models.Groups)
     if id is not None:
-        query = query.filter(models.Groups.id==id)     
+        query = query.filter(models.Groups.id==id)   
+    if name is not None:
+        query = query.filter(models.Groups.name.ilike(f"%{name}%"))  
     return query.all()
 
-def get_products(db:Session,group_id:Optional[UUID]=None,status:Optional[int]=None,name:Optional[str]=None):
+def get_products(db:Session,id:Optional[UUID]=None,group_id:Optional[UUID]=None,status:Optional[int]=None,name:Optional[str]=None):
     query = db.query(models.Products)
+    if id is not None:
+        query = query.filter(models.Products.id==id)
     if group_id is not None:
         query = query.filter(models.Products.group_id==group_id)
     if status is not None:
@@ -266,6 +291,8 @@ def get_products(db:Session,group_id:Optional[UUID]=None,status:Optional[int]=No
     if name is not None:
         query = query.filter(models.Products.name.ilike(f"%{name}%"))
     return query.all()
+
+
 
 
     

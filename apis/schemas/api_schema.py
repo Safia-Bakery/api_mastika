@@ -3,6 +3,7 @@ from pydantic import BaseModel,Field
 from pydantic import validator
 from users.schemas.user_schema import User
 from uuid import UUID
+from datetime import datetime
 
 class CreateCategory(BaseModel):
     name :str
@@ -223,3 +224,26 @@ class ProductsFilter(BaseModel):
     price:Optional[float]=None
     class Config:
         orm_mode=True
+
+class OrderCreation(BaseModel):
+    order_user : Optional[str]=None
+    phone_number :str
+    extra_number: Optional[str]=None
+    location: Optional[str]=None
+    payment_type:int
+    firstly_payment:int
+    is_delivery:int
+    comment :Optional[str]=None
+    deliver_date:datetime
+    address:Optional[str]=None
+    apartment:Optional[str]=None
+    home:Optional[str]=None
+    near_to:Optional[str]=None
+    department_id:Optional[UUID]=None
+    category_id:int
+
+class OrderProducts(BaseModel):
+    order_id:int
+    product_id:UUID
+    comment:Optional[str]=None
+    amount:int

@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from users.utils.user_micro import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
+from uuid import UUID
 from apis.crud import queries
 from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
@@ -129,52 +130,59 @@ async def get_category_with_id(id:int,db:Session=Depends(get_db),request_user:Us
 
 
 @api_router.post('/v1/orders')
-async def get_all_typeofdata(request:Request,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
-    form_data = await request.form()
-    category_id = form_data['category_id']
-    phone_number = form_data['phone_number']
-    try:
-        location = form_data['location']
-    except:
-        location = None
-    try:
-        branch = form_data['branch']
-        branch_id = queries.get_dep_with_branch(db=db,id=branch).id
-    except:
-        branch_id=None
+async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    #form_data = await request.form()
+    #category_id = form_data['category_id']
+    #phone_number = form_data['phone_number']
+    #try:
+    #    location = form_data['location']
+    #except:
+    #    location = None
+    #try:
+    #    branch = form_data['branch']
+    #    branch_id = queries.get_dep_with_branch(db=db,id=branch).id
+    #except:
+    #    branch_id=None
 
-    order_cr = queries.create_order(db=db,category_id=category_id,user_id=request_user.id,phone_number=phone_number,location=location,department=branch_id)
-    for field_name,field_value in form_data.items():
-        
-        if 'file' in field_name:
-            generated_filename = generate_random_filename()+form_data[field_name].filename
-            subcat_id = re.findall(r'\d+',field_name)[0]
-            table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,content=generated_filename)
-            queries.create_value_order(db=db,table=table_data)
-            with open('files/'+generated_filename, 'wb+') as f:
-                shutil.copyfileobj(form_data[field_name].file,f)
-        if 'selval' in field_name:
-            field_id = re.findall(r'\d+',field_name)
-            subcat_id = field_id[0]
-            table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,select_id=field_value)
-            queries.create_value_order(db=db,table=table_data)
-        if 'selval_child' in field_name:
-            field_id = re.findall(r'\d+',field_name)
-            subcat_id = field_id[0]
-            table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,selchild_id=field_value)
-            queries.create_value_order(db=db,table=table_data)
-        if 'sting' in field_name:
-            field_id = re.findall(r'\d+',field_name)
-            subcat_id = field_id[0]
-            table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,content=field_value)
-            queries.create_value_order(db=db,table=table_data)
+    order_cr = queries.create_order(db=db,user_id=request_user.id,form_data=form_data)
+    #for field_name,field_value in form_data.items():
+    #    
+    #    if 'file' in field_name:
+    #        generated_filename = generate_random_filename()+form_data[field_name].filename
+    #        subcat_id = re.findall(r'\d+',field_name)[0]
+    #        table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,content=generated_filename)
+    #        queries.create_value_order(db=db,table=table_data)
+    #        with open('files/'+generated_filename, 'wb+') as f:
+    #            shutil.copyfileobj(form_data[field_name].file,f)
+    #    if 'selval' in field_name:
+    #        field_id = re.findall(r'\d+',field_name)
+    #        subcat_id = field_id[0]
+    #        table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,select_id=field_value)
+    #        queries.create_value_order(db=db,table=table_data)
+    #    if 'selval_child' in field_name:
+    #        field_id = re.findall(r'\d+',field_name)
+    #        subcat_id = field_id[0]
+    #        table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,selchild_id=field_value)
+    #        queries.create_value_order(db=db,table=table_data)
+    #    if 'sting' in field_name:
+    #        field_id = re.findall(r'\d+',field_name)
+    #        subcat_id = field_id[0]
+    #        table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,content=field_value)
+    #        queries.create_value_order(db=db,table=table_data)
+#
+    #    if 'integer' in field_name:
+    #        field_id = re.findall(r'\d+',field_name)
+    #        subcat_id = field_id[0]
+    #        table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,content=field_value)
+    #        queries.create_value_order(db=db,table=table_data)
+    return order_cr
 
-        if 'integer' in field_name:
-            field_id = re.findall(r'\d+',field_name)
-            subcat_id = field_id[0]
-            table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,content=field_value)
-            queries.create_value_order(db=db,table=table_data)
-    return {'success':True}
+
+
+@api_router.post('/v1/orders/products')
+async def product_add(form_data:api_schema.OrderProducts,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query =queries.create_order_products(db=db,form_data=form_data)
+    return query
 
 
 @api_router.get('/v1/orders',response_model=Union[api_schema.BaseOrder,list[api_schema.GetOrdervsId]])
@@ -210,6 +218,16 @@ async def get_branch_list(db:Session=Depends(get_db),request_user:User=Depends(g
     query = queries.get_branches_list(db=db)
     return paginate(query)
 
+
+@api_router.get('/v1/products/groups',response_model=list[api_schema.GroupsGet])
+async def get_group_list(db:Session=Depends(get_db),id:Optional[UUID]=None,name:Optional[str]=None,request_user:User=Depends(get_current_user)):
+    query = queries.get_product_groups(db=db,id=id,name=name)
+    return query
+
+@api_router.get('/v1/products',response_model=list[api_schema.ProductsFilter])
+async def get_product_list(db:Session=Depends(get_db),id:Optional[UUID]=None,group_id:Optional[UUID]=None,name:Optional[str]=None,status:Optional[int]=None,request_user:User=Depends(get_current_user)):
+    query = queries.get_products(db=db,id=id,name=name,group_id=group_id,status=status)
+    return query
 
 
 
