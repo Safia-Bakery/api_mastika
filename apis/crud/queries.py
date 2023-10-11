@@ -7,9 +7,9 @@ from sqlalchemy.exc import IntegrityError
 from uuid import UUID
 
 
-def create_cat(db:Session,name,price,iiko_id):
+def create_cat(db:Session,name):
     try:
-        query = models.Category(name=name,price=price,iiko_id=iiko_id)
+        query = models.Category(name=name)
         db.add(query)
         db.commit()
         db.refresh(query)
@@ -24,14 +24,12 @@ def get_category_withid(db:Session,id:int):
     return query
 
 
-def get_category(db:Session,id:Optional[int]=None,name:Optional[str]=None,price:Optional[float]=None,status:Optional[int]=None):
+def get_category(db:Session,id:Optional[int]=None,name:Optional[str]=None,status:Optional[int]=None):
     query = db.query(models.Category)
     if id is not None:
         query  = query.filter(models.Category.id==id)
     if name is not None:
         query = query.filter(models.Category.name.ilike(f"%{name}%"))
-    if price is not None:
-        query = query.filter(models.Category.price.ilike(f"%{price}%"))
     if status is not None:
         query = query.filter(models.Category.status==status)
     return query.all()
@@ -49,8 +47,6 @@ def update_category(db:Session,form_data:api_schema.GetCategory):
             query.status=form_data.status
         if form_data.name is not None:
             query.name = form_data.name
-        if form_data.price is not None:
-            query.price = form_data.price
 
         db.commit()
         db.refresh(query)
@@ -234,3 +230,42 @@ def get_branches_list(db:Session):
 def get_dep_with_branch(db:Session,id):
     query = db.query(models.Departments).filter(models.Departments.branch_id==id).first()
     return query
+
+def add_product_groups(db:Session,id,code,name):
+    try:
+        query = models.Groups(name=name,code=code,id=id)
+        db.add(query)
+        db.commit()
+        return True
+    except:
+            db.rollback()
+            return "Error: Unique constraint violation."
+    
+def add_products(db:Session,id,name,producttype,groud_id,price):
+    try:
+        query = models.Products(id=id,name=name,productType=producttype,group_id=groud_id,price=price)
+        db.add(query)
+        db.commit()
+        return True
+    except:
+        db.rollback()
+        return "Error: Unique constraint violation."
+
+def get_product_groups(db:Session,id:Optional[UUID]=None,name:Optional[str]=None):
+    query = db.query(models.Groups)
+    if id is not None:
+        query = query.filter(models.Groups.id==id)     
+    return query.all()
+
+def get_products(db:Session,group_id:Optional[UUID]=None,status:Optional[int]=None,name:Optional[str]=None):
+    query = db.query(models.Products)
+    if group_id is not None:
+        query = query.filter(models.Products.group_id==group_id)
+    if status is not None:
+        query = query.filter(models.Products.status==status)
+    if name is not None:
+        query = query.filter(models.Products.name.ilike(f"%{name}%"))
+    return query.all()
+
+
+    

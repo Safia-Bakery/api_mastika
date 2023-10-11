@@ -7,27 +7,27 @@ from apis.crud import queries
 from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
 from typing import Optional,Union
-from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores
+from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups
 from fastapi import Request
 import shutil
 from fastapi_pagination import paginate,Page,add_pagination
 import re
 from apis.models import models
 
-mastika  = '30ed6a72-8771-4c81-91ad-e4b71305858d'
+mastika  = ['30ed6a72-8771-4c81-91ad-e4b71305858d','d9dadbb0-8b97-4666-b740-fcfa47d11419','05b75ddf-3b87-4d1c-9483-5664f29d2c94','4c169130-114a-4314-989e-c48717ceb4e6']
 
 api_router = APIRouter()
 
 
 @api_router.post('/v1/category')
 async def create_category(form_data:api_schema.CreateCategory,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
-    #query = queries.create_cat(db=db,form_data=form_data)
+    query = queries.create_cat(db=db,form_data=form_data)
     return {'success':True,'message':'this api currently inactive you data  will not be added to category list'}
 
 
 @api_router.get('/v1/category',response_model=list[api_schema.GetCategory])
-async def get_filter_category(name:Optional[str]=None,id:Optional[int]=None,status:Optional[int]=None,price:Optional[float]=None,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
-    query = queries.get_category(db=db,name=name,id=id,price=price,status=status)
+async def get_filter_category(name:Optional[str]=None,id:Optional[int]=None,status:Optional[int]=None,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
+    query = queries.get_category(db=db,name=name,id=id,status=status)
     return query
 
 @api_router.put('/v1/category',response_model=api_schema.GetCategory)
@@ -98,18 +98,26 @@ async def update_child_selval(form_data:api_schema.UpdateChildSelVal,db:Session=
     query = queries.update_child_selvalue(db=db,form_data=form_data)
     return query
 
-@api_router.put('/v1/iiko/cakes',response_model=list[api_schema.GetCategory])
+@api_router.put('/v1/iiko/cakes')
 async def iiko_get_cakes(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     key = authiiko()
-    data = get_cakes(key)
-    for i in data:
-        if i['parent']==mastika:
+    groups = get_groups(key)
+    for i in groups:
+        if i['id'] in mastika:
             try:
-                queries.create_cat(db=db,name=i['name'],price=i['defaultSalePrice'],iiko_id=i['id'])
+                queries.add_product_groups(db=db,id=i['id'],code=i['code'],name=i['name'])
             except:
                 pass
+    data = get_cakes(key)
     
-    return queries.get_categories_iiko(db=db)
+    for i in data:
+        if i['parent'] in mastika:
+            try:
+            
+                queries.add_products(db=db,name=i['name'],price=i['defaultSalePrice'],id=i['id'],groud_id=i['parent'],producttype=i['type'])
+            except:
+                pass
+    return {"success":True}
 
 
 
@@ -201,6 +209,7 @@ async def update_departments(db:Session=Depends(get_db),request_user:User=Depend
 async def get_branch_list(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     query = queries.get_branches_list(db=db)
     return paginate(query)
+
 
 
 

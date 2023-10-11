@@ -17,6 +17,11 @@ def authiiko():
     key = data.text
     return key
 
+
+def get_groups(key): 
+    groups = requests.get(f"{BASE_URL}/resto/api/v2/entities/products/group/list?key={key}").json()
+    return groups
+
 def get_cakes(key):
     products = requests.get(f"{BASE_URL}/resto/api/v2/entities/products/list?key={key}&includeDeleted=false").json()
     return products
@@ -57,3 +62,4 @@ def list_stores(key):
 
     names = [[item.find('name').text, item.find('id').text,item.find('parentId').text] for item in corporate_item_dtos]
     return names
+

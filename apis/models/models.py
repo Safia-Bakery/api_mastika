@@ -14,8 +14,6 @@ class Category(Base):
     id = Column(Integer,primary_key=True,index=True)
     name = Column(VARCHAR(length=255))
     status = Column(Integer,default=1)
-    price = Column(Float)
-    iiko_id=Column(UUID(as_uuid=True),unique=True)
     category_vs_order = relationship('Order',back_populates='order_vs_category')
     category_vs_subcategory = relationship('SubCategory',back_populates='subcategory_vs_category')
 
@@ -142,5 +140,25 @@ class Departments(Base):
     origin = Column(Integer,default=0)
     status = Column(Integer,default=0)
     #supplier = relationship('Suppliers',back_populates='store')
+
+
+class Groups(Base):
+    __tablename__ = 'groups'
+    id= Column(UUID(as_uuid=True),primary_key=True,default=uuid.uuid4)
+    name = Column(String)
+    code=Column(String,nullable=True)
+    group_r = relationship('Products',back_populates='product_r')
+    status=Column(Integer,default=1)
+
+class Products(Base):
+    __tablename__ = 'products'
+    id = Column(UUID(as_uuid=True),primary_key=True,default=uuid.uuid4)
+    status= Column(Integer,default=1)
+    name = Column(String)
+    productType = Column(String,nullable=True)
+    group_id = Column(UUID(as_uuid=True),ForeignKey('groups.id'))
+    product_r = relationship('Groups',back_populates='group_r')
+    price = Column(Float,nullable=True)
+
 
 

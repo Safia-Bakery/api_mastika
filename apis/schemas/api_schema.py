@@ -6,13 +6,11 @@ from uuid import UUID
 
 class CreateCategory(BaseModel):
     name :str
-    price:float
     
 
 
 class GetCategory(BaseModel):
     name:Optional[str]=None
-    price:Optional[float]=None
     id:Optional[int]=None
     status:int
     class Config:
@@ -207,3 +205,21 @@ class Branches_list(BaseModel):
     is_fabrica:Optional[int]=None
     class Config:
         orm_mode=True 
+
+
+class GroupsGet(BaseModel):
+    id:UUID
+    name:str
+    code:str
+    status:int
+    class Config:
+        orm_mode=True
+class ProductsFilter(BaseModel):
+    id:UUID
+    status:int
+    name:str
+    productType:str
+    group_id:UUID
+    price:Optional[float]=None
+    class Config:
+        orm_mode=True
