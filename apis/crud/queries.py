@@ -3,14 +3,21 @@ from apis.schemas import api_schema
 from apis.models import models
 from typing import Optional
 from sqlalchemy.orm import joinedload
+from sqlalchemy.exc import IntegrityError
+from uuid import UUID
 
 
 def create_cat(db:Session,name,price,iiko_id):
-    query = models.Category(name=name,price=price,iiko_id=iiko_id)
-    db.add(query)
-    db.commit()
-    db.refresh(query)
-    return query
+    try:
+        query = models.Category(name=name,price=price,iiko_id=iiko_id)
+        db.add(query)
+        db.commit()
+        db.refresh(query)
+        return query
+    except IntegrityError as e:
+        # Handle unique constraint violation
+        db.rollback()
+        return "Error: Unique constraint violation."
 
 def get_category_withid(db:Session,id:int):
     query = db.query(models.Category).filter(models.Category.id==id).options(joinedload(models.Category.category_vs_subcategory)).filter(models.SubCategory.status==0).first()
@@ -163,9 +170,8 @@ def update_child_selvalue(db:Session,form_data:api_schema.UpdateChildSelVal):
     db.refresh(query)
     return query
 
-
-def create_order(db:Session,category_id,user_id):
-    query = models.Order(category_id=category_id,user_id=user_id)
+def create_order(db:Session,category_id,user_id,phone_number,location,department):
+    query = models.Order(category_id=category_id,user_id=user_id,phone_number=phone_number,location=location,department=department)
     db.add(query)
     db.commit()
     db.refresh(query)
@@ -191,4 +197,40 @@ def get_values_oforder(db:Session,id):
 
 def getOrderList(db:Session):
     query = db.query(models.Order).all()
+    return query
+
+
+
+def insert_branches(db:Session,items):
+    for item in items:
+        try:
+            new_item = models.Branchs(country='Uzbekistan', name=item[0],status=1,id=item[1])
+            db.add(new_item)
+            db.commit()
+            db.refresh(new_item)
+        except:
+            db.rollback()
+            return "Error: Unique constraint violation."
+    return True
+
+def insert_departments(db:Session,items):
+    for item in items:
+        try:
+            new_item = models.Departments( name=item[0],status=1,id=item[1],branch_id=item[2])
+            db.add(new_item)
+            db.commit()
+            db.refresh(new_item)
+        except:
+            db.rollback()
+            return "Error: Unique constraint violation."
+    return True
+
+
+def get_branches_list(db:Session):
+    query = db.query(models.Branchs).filter(models.Branchs.status==1).all()
+    return query
+
+
+def get_dep_with_branch(db:Session,id):
+    query = db.query(models.Departments).filter(models.Departments.branch_id==id).first()
     return query

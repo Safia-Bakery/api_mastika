@@ -5,6 +5,7 @@ from datetime import datetime
 import pytz 
 from sqlalchemy.dialects.postgresql import UUID
 from users.models.models import Base
+import uuid
 
 
 
@@ -14,7 +15,7 @@ class Category(Base):
     name = Column(VARCHAR(length=255))
     status = Column(Integer,default=1)
     price = Column(Float)
-    iiko_id=Column(UUID(as_uuid=True))
+    iiko_id=Column(UUID(as_uuid=True),unique=True)
     category_vs_order = relationship('Order',back_populates='order_vs_category')
     category_vs_subcategory = relationship('SubCategory',back_populates='subcategory_vs_category')
 
@@ -22,6 +23,10 @@ class Category(Base):
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer,primary_key=True,index=True)
+    phone_number = Column(String,nullable=True)
+    location = Column(String,nullable=True)
+    department_id = Column(UUID(as_uuid=True),ForeignKey('departments.id'),nullable=True)
+    order_br = relationship('Departments',back_populates='department_br')
     user_id = Column(Integer,ForeignKey('users.id'))
     order_vs_user = relationship('Users',back_populates='user_vs_order')
     category_id = Column(Integer,ForeignKey('categories.id'))
@@ -107,8 +112,35 @@ class Value(Base):
 
 
 
+class Branchs(Base):
+    __tablename__='branchs'
+    id = Column(UUID(as_uuid=True),primary_key=True,default=uuid.uuid4)
+    name = Column(String)
+    latitude = Column(Float,nullable=True)
+    longtitude = Column(Float,nullable=True)
+    country = Column(String,nullable=True)
+    status = Column(Integer,default=0)
+    department_br = relationship('Departments',back_populates='branch_dr')
+    is_fabrica = Column(Integer,nullable=True)
 
 
 
+
+
+
+
+
+
+
+class Departments(Base):
+    __tablename__ = 'departments'
+    id = Column(UUID(as_uuid=True),primary_key=True,default=uuid.uuid4)
+    name = Column(String)
+    department_br = relationship('Order',back_populates='order_br')
+    branch_id = Column(UUID(as_uuid=True),ForeignKey('branchs.id'))
+    branch_dr = relationship('Branchs',back_populates='department_br')
+    origin = Column(Integer,default=0)
+    status = Column(Integer,default=0)
+    #supplier = relationship('Suppliers',back_populates='store')
 
 

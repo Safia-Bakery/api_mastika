@@ -11,8 +11,12 @@ user_router = APIRouter()
 @user_router.post('/user',tags=['Users'],response_model=User)
 async def create_user(form_data:UserInsertSch,db:Session=Depends(get_db)):
     try:
+        phone_number = form_data.phone_number.replace('+','')
+        user = UserService(db).get_user_withph(phone_number=phone_number)
+        if user:
+            return user
         password  = hash_password(password=form_data.password)
-        query  = UserService(db).create_user(form_data.username,password=password)
+        query  = UserService(db).create_user(form_data.username,password=password,phone_number=phone_number)
         return query
     except:
         raise HTTPException(
@@ -51,3 +55,9 @@ async def get_user(db:Session=Depends(get_db),request_user:User=Depends(get_curr
 @user_router.get('/me',tags=['Users'],response_model=User)
 async def get_user(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     return request_user
+
+@user_router.get('/user/get/create',tags=['users'],response_model=User)
+async def get_or_create(phone_number:str,db:Session=Depends(get_db)):
+    phone_number = phone_number.replace('+','')
+    query =UserService(db).get_or_create(phone_number=phone_number)
+    return query

@@ -1,7 +1,5 @@
 from apis.schemas import api_schema
 from fastapi import APIRouter
-from pydantic import parse_obj_as
-
 from users.utils.user_micro import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
@@ -9,9 +7,10 @@ from apis.crud import queries
 from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
 from typing import Optional,Union
-from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename
+from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores
 from fastapi import Request
 import shutil
+from fastapi_pagination import paginate,Page,add_pagination
 import re
 from apis.models import models
 
@@ -90,7 +89,7 @@ async def create_child_select(form_data:api_schema.ChildSelCreate,db:Session=Dep
 
 @api_router.get('/v1/child/sel/val',response_model=list[api_schema.GetChildSelVal])
 async def filter_child_selval(id:Optional[int]=None,selval_id:Optional[int]=None,content :Optional[str]=None, value:Optional[str]=None,status:Optional[int]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
-    query = queries.filter_child_selval(db=db,)
+    query = queries.filter_child_selval(db=db,content=content,value=value,selval_id=selval_id,status=status,id=id,)
     return query
 
 
@@ -125,10 +124,20 @@ async def get_category_with_id(id:int,db:Session=Depends(get_db),request_user:Us
 async def get_all_typeofdata(request:Request,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     form_data = await request.form()
     category_id = form_data['category_id']
-    order_cr = queries.create_order(db=db,category_id=category_id,user_id=request_user.id)
+    phone_number = form_data['phone_number']
+    try:
+        location = form_data['location']
+    except:
+        location = None
+    try:
+        branch = form_data['branch']
+        branch_id = queries.get_dep_with_branch(db=db,id=branch).id
+    except:
+        branch_id=None
+
+    order_cr = queries.create_order(db=db,category_id=category_id,user_id=request_user.id,phone_number=phone_number,location=location,department=branch_id)
     for field_name,field_value in form_data.items():
         
-        print(field_name)
         if 'file' in field_name:
             generated_filename = generate_random_filename()+form_data[field_name].filename
             subcat_id = re.findall(r'\d+',field_name)[0]
@@ -174,7 +183,24 @@ async def get_one_order(id:Optional[int]=None,db:Session=Depends(get_db),request
 
 
 
+@api_router.put('/v1/iiko/departments',)
+async def update_departments(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    try:
+        queries.insert_branches(db=db,items=list_departments(authiiko()))
+    except:
+        pass
+    try:
+        queries.insert_departments(db=db,
+                                   items=list_stores(authiiko()))
+    except:
+        pass
+    return {'success':True}
 
+
+@api_router.get('/v1/departments',response_model=Page[api_schema.Branches_list])
+async def get_branch_list(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = queries.get_branches_list(db=db)
+    return paginate(query)
 
 
 

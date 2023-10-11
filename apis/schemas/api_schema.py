@@ -2,6 +2,7 @@ from typing import Optional ,Literal
 from pydantic import BaseModel,Field
 from pydantic import validator
 from users.schemas.user_schema import User
+from uuid import UUID
 
 class CreateCategory(BaseModel):
     name :str
@@ -171,6 +172,7 @@ class GetCategoryWithId(BaseModel):
 class GetOrdervsId(BaseModel):
     id:int
     order_vs_user:User
+    phone_number:Optional[str]=None
     order_vs_category:GetCategory
     class Config:
         orm_mode=True
@@ -195,3 +197,13 @@ class BaseOrder(BaseModel):
     class Config:
         orm_mode=True 
 
+class Branches_list(BaseModel):
+    id:UUID
+    name:str
+    latitude:Optional[float]=None
+    longtitude:Optional[float]=None
+    country :str
+    status:int
+    is_fabrica:Optional[int]=None
+    class Config:
+        orm_mode=True 
