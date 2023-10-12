@@ -170,7 +170,10 @@ def update_child_selvalue(db:Session,form_data:api_schema.UpdateChildSelVal):
 
 def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
     if form_data.department_id is not None:
-        department_id = db.query(models.Departments).filter(models.Departments.branch_id==form_data.department_id).first().id
+        try:
+            department_id = db.query(models.Departments).filter(models.Departments.branch_id==form_data.department_id).first().id
+        except:
+            department_id = None
     else:
         department_id = None
     query = models.Order(order_user=form_data.order_user,phone_number=form_data.phone_number,extra_number=form_data.extra_number,location=form_data.location,payment_type=form_data.payment_type,
