@@ -178,6 +178,12 @@ async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depen
     return order_cr
 
 
+@api_router.put('/v1/orders')
+async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = queries.update_order(db=db,form_data=form_data)
+    return query
+
+
 
 @api_router.post('/v1/orders/products')
 async def product_add(form_data:api_schema.OrderProducts,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):

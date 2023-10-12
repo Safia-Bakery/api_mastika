@@ -90,6 +90,7 @@ class UpdateSelectValue(BaseModel):
     status:Optional[int]=None
 
 
+
 class ChildSelCreate(BaseModel):
     selval_id:int
     content:str
@@ -166,13 +167,48 @@ class GetCategoryWithId(BaseModel):
     category_vs_subcategory:list[GetSubCatWithId]
     class Config:
         orm_mode=True
+class ProductsFilter(BaseModel):
+    id:UUID
+    status:int
+    name:str
+    productType:str
+    group_id:UUID
+    price:Optional[float]=None
+    class Config:
+        orm_mode=True
 
+class OrderProductsGet(BaseModel):
+    id:int
+    order_product:Optional[ProductsFilter]=None
+    product_id:UUID
+    comment:Optional[str]=None
+    amount:int
+    class Config:
+        orm_mode=True
 
 class GetOrdervsId(BaseModel):
     id:int
     order_vs_user:User
     phone_number:Optional[str]=None
+    extra_number:Optional[str]=None
+    location:Optional[str]=None
+    payment_type:int
+    firstly_payment:int
+    is_delivery:int
+    comment:Optional[str]=None
+    reject_reason:Optional[str]=None
+    created_at:datetime
+    updated_at:Optional[datetime]=None
+    delivery_date:datetime
+    status:int
+    product_order:Optional[OrderProductsGet]=None
+    address:Optional[str]=None
+    apartment:Optional[str]=None
+    home:Optional[str]=None
+    near_to:Optional[str]=None
     order_vs_category:GetCategory
+
+
     class Config:
         orm_mode=True
 
@@ -215,32 +251,47 @@ class GroupsGet(BaseModel):
     status:int
     class Config:
         orm_mode=True
-class ProductsFilter(BaseModel):
-    id:UUID
-    status:int
-    name:str
-    productType:str
-    group_id:UUID
-    price:Optional[float]=None
-    class Config:
-        orm_mode=True
+
 
 class OrderCreation(BaseModel):
-    order_user : Optional[str]=None
-    phone_number :str
+    order_user : str
+    phone_number :Optional[str]=None
     extra_number: Optional[str]=None
     location: Optional[str]=None
-    payment_type:int
-    firstly_payment:int
+    payment_type:Optional[int]=None
+    firstly_payment:Optional[int]=None
     is_delivery:int
     comment :Optional[str]=None
-    deliver_date:datetime
+    deliver_date:Optional[datetime]=None
     address:Optional[str]=None
     apartment:Optional[str]=None
     home:Optional[str]=None
     near_to:Optional[str]=None
     department_id:Optional[UUID]=None
     category_id:int
+
+
+
+class OrderUpdate(BaseModel):
+    id :int
+    order_user : Optional[str]=None
+    phone_number :Optional[str]=None
+    extra_number: Optional[str]=None
+    location: Optional[str]=None
+    payment_type:Optional[int]=None
+    firstly_payment:Optional[int]=None
+    is_delivery:Optional[int]=None
+    comment :Optional[str]=None
+    deliver_date:Optional[datetime]=None
+    address:Optional[str]=None
+    apartment:Optional[str]=None
+    home:Optional[str]=None
+    near_to:Optional[str]=None
+    department_id:Optional[UUID]=None
+    category_id:Optional[int]=None
+    status:Optional[int]=None
+    
+
 
 class OrderProducts(BaseModel):
     order_id:int
