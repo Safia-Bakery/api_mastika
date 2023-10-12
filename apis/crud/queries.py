@@ -176,7 +176,7 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
             department_id = None
     else:
         department_id = None
-    query = models.Order(order_user=form_data.order_user,phone_number=form_data.phone_number,extra_number=form_data.extra_number,location=form_data.location,payment_type=form_data.payment_type,
+    query = models.Order(order_user=form_data.order_user,phone_number=form_data.phone_number,extra_number=form_data.extra_number,payment_type=form_data.payment_type,
                          firstly_payment=form_data.firstly_payment,
                          is_delivery=form_data.is_delivery,
                          comment=form_data.comment,
@@ -187,7 +187,9 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
                          near_to=form_data.near_to,
                          department_id=department_id,
                          user_id=user_id,
-                         category_id=form_data.category_id)
+                         category_id=form_data.category_id,
+                         lat=form_data.lat,
+                         long=form_data.long)
 
     db.add(query)
     db.commit()
@@ -204,8 +206,6 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
         query.phone_number = form_data.phone_number
     if form_data.extra_number is not None:
         query.extra_number = form_data.extra_number
-    if form_data.location is not None:
-        query.location = form_data.location
     if form_data.payment_type is not None:
         query.payment_type =form_data.payment_type
     if form_data.firstly_payment is not None:
@@ -230,6 +230,10 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
         query.category_id =form_data.category_id
     if form_data.status is not None:
         query.status = form_data.status
+    if form_data.lat is not None:
+        query.lat = form_data.lat
+    if form_data.long is not None:
+        query.long = form_data.long
     db.commit()
     db.refresh(query)
     return query

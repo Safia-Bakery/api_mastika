@@ -257,7 +257,6 @@ class OrderCreation(BaseModel):
     order_user : str
     phone_number :Optional[str]=None
     extra_number: Optional[str]=None
-    location: Optional[str]=None
     payment_type:Optional[int]=None
     firstly_payment:Optional[int]=None
     is_delivery:int
@@ -269,6 +268,9 @@ class OrderCreation(BaseModel):
     near_to:Optional[str]=None
     department_id:Optional[UUID]=None
     category_id:Optional[int]=None
+    lat:Optional[str]=None
+    long:Optional[str]=None
+
 
 
 
@@ -277,7 +279,6 @@ class OrderUpdate(BaseModel):
     order_user : Optional[str]=None
     phone_number :Optional[str]=None
     extra_number: Optional[str]=None
-    location: Optional[str]=None
     payment_type:Optional[int]=None
     firstly_payment:Optional[int]=None
     is_delivery:Optional[int]=None
@@ -290,7 +291,8 @@ class OrderUpdate(BaseModel):
     department_id:Optional[UUID]=None
     category_id:Optional[int]=None
     status:Optional[int]=None
-
+    lat:Optional[str]=None
+    long:Optional[str]=None
 
 
 class OrderProducts(BaseModel):

@@ -31,7 +31,6 @@ class Order(Base):
     order_user = Column(String,nullable=True)
     phone_number = Column(String,nullable=True)
     extra_number = Column(String,nullable=True)
-    location = Column(String,nullable=True)
     payment_type = Column(Integer,nullable=True)
     firstly_payment = Column(Integer,nullable=True)
     is_delivery = Column(Integer)
@@ -53,6 +52,8 @@ class Order(Base):
     category_id = Column(Integer,ForeignKey('categories.id'),nullable=True)
     order_vs_category = relationship('Category',back_populates='category_vs_order')
     order_vs_value = relationship('Value',back_populates='value_vs_order')
+    lat = Column(String,nullable=True)
+    long = Column(String,nullable=True)
 
 
 class OrderProducts(Base):
