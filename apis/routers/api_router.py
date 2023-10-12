@@ -22,7 +22,7 @@ api_router = APIRouter()
 
 @api_router.post('/v1/category')
 async def create_category(form_data:api_schema.CreateCategory,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
-    query = queries.create_cat(db=db,form_data=form_data)
+    query = queries.create_cat(db=db,name=form_data.name)
     return {'success':True,'message':'this api currently inactive you data  will not be added to category list'}
 
 

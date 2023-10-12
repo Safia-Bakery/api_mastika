@@ -25,7 +25,7 @@ class UserService:
         query = self.db.query(Users).filter(Users.phone_number==phone_number).first()
         if query:
             return query
-        data = Users(phone_number=phone_number)
+        data = Users(phone_number=phone_number,is_client=1)
         self.db.add(data)
         self.db.commit()
         self.db.refresh(data)

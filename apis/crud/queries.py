@@ -166,7 +166,13 @@ def update_child_selvalue(db:Session,form_data:api_schema.UpdateChildSelVal):
     db.refresh(query)
     return query
 
+
+
 def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
+    if form_data.department_id is not None:
+        department_id = db.query(models.Departments.branch_id==form_data.department_id).first()
+    else:
+        department_id = None
     query = models.Order(order_user=form_data.order_user,phone_number=form_data.phone_number,extra_number=form_data.extra_number,location=form_data.location,payment_type=form_data.payment_type,
                          firstly_payment=form_data.firstly_payment,
                          is_delivery=form_data.is_delivery,
@@ -176,7 +182,7 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
                          apartment=form_data.apartment,
                          home=form_data.home,
                          near_to=form_data.near_to,
-                         department_id=form_data.department_id,
+                         department_id=department_id,
                          user_id=user_id,
                          category_id=form_data.category_id)
 

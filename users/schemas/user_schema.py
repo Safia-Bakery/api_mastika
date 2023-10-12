@@ -5,7 +5,11 @@ class User(BaseModel):
     username:Optional[str]=None
     status:int
     created_at:datetime
+    first_name:Optional[str]=None
+    last_name:Optional[str]=None
+    is_client:Optional[int]=None
     id:int
+
     phone_number:Optional[str]=None
     class Config:
         orm_mode=True
