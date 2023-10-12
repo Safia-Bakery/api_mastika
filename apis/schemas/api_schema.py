@@ -268,7 +268,7 @@ class OrderCreation(BaseModel):
     home:Optional[str]=None
     near_to:Optional[str]=None
     department_id:Optional[UUID]=None
-    category_id:int
+    category_id:Optional[int]=None
 
 
 
@@ -290,7 +290,7 @@ class OrderUpdate(BaseModel):
     department_id:Optional[UUID]=None
     category_id:Optional[int]=None
     status:Optional[int]=None
-    
+
 
 
 class OrderProducts(BaseModel):

@@ -50,7 +50,7 @@ class Order(Base):
     order_br = relationship('Departments',back_populates='department_br')
     user_id = Column(Integer,ForeignKey('users.id'))
     order_vs_user = relationship('Users',back_populates='user_vs_order')
-    category_id = Column(Integer,ForeignKey('categories.id'))
+    category_id = Column(Integer,ForeignKey('categories.id'),nullable=True)
     order_vs_category = relationship('Category',back_populates='category_vs_order')
     order_vs_value = relationship('Value',back_populates='value_vs_order')
 
