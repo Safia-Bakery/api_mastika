@@ -191,8 +191,8 @@ async def product_add(form_data:api_schema.OrderProducts,db:Session=Depends(get_
     return query
 
 
-@api_router.get('/v1/orders',response_model=Union[api_schema.BaseOrder,list[api_schema.GetOrdervsId]])
-async def get_one_order(id:Optional[int]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+@api_router.get('/v1/orders',response_model=api_schema.BaseOrder)
+async def get_one_order(id:int,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     if id is not None:
         order_query = queries.get_order_with_id(db=db,id=id)
         value_query = queries.get_values_oforder(db=db,id=id)
@@ -200,7 +200,15 @@ async def get_one_order(id:Optional[int]=None,db:Session=Depends(get_db),request
         return {'order':order_query,'value':value_query}
     else:
         query = queries.getOrderList(db=db)
-        return query
+        return {'order':query}
+
+@api_router.get('/v1/orders/all',response_model=Page[api_schema.GetOrdervsId])
+async def get_one_order(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    
+    query = queries.getOrderList(db=db)
+    return paginate(query)
+    
+
 
 
 
@@ -220,8 +228,8 @@ async def update_departments(db:Session=Depends(get_db),request_user:User=Depend
 
 
 @api_router.get('/v1/departments',response_model=Page[api_schema.Branches_list])
-async def get_branch_list(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
-    query = queries.get_branches_list(db=db)
+async def get_branch_list(id:Optional[UUID]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = queries.get_branches_list(db=db,id=id)
     return paginate(query)
 
 

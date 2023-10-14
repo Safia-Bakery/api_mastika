@@ -1,11 +1,13 @@
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
+from users.models.models import Permissions
 from fastapi import Depends,HTTPException,status
-from users.schemas.user_schema import UserInsertSch,User
+from users.schemas.user_schema import UserInsertSch,User,UserUpdate,RolesCreate,RolesGet,PagesGet
 from users.utils.user_micro import get_db,hash_password,get_current_user,verify_password,create_access_token,create_refresh_token
 from users.crud.queries import UserService
 from fastapi_pagination import paginate,Page,add_pagination
 from fastapi.security import OAuth2PasswordBearer,OAuth2PasswordRequestForm
+from typing import Optional
 
 user_router = APIRouter()
 @user_router.post('/user',tags=['Users'],response_model=User)
@@ -46,8 +48,8 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(),db:Session=Depe
 
 
 @user_router.get('/user',tags=['Users'],response_model=Page[User])
-async def get_user(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
-    query = UserService(db).get_users()
+async def get_user(is_client:Optional[int]=None,id:Optional[int]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = UserService(db).get_users(id=id,is_client=is_client)
     return paginate(query)
 
 
@@ -61,3 +63,41 @@ async def get_or_create(phone_number:str,db:Session=Depends(get_db)):
     phone_number = phone_number.replace('+','')
     query =UserService(db).get_or_create(phone_number=phone_number)
     return query
+
+@user_router.put('/users',tags=['Users'],response_model=User)
+async def update_user(form_data:UserUpdate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = UserService(db).user_update(form_data=form_data)
+    return query
+
+@user_router.put('/roles',tags=['Users'])
+async def update_user_permissions(role_id:int,per_list:Optional[list[int]]=None,name:Optional[str]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    if per_list is not None:
+        UserService(db).set_null_permissions(id=role_id)
+        permisison = [Permissions(role_id=role_id,pagecrud_id=i) for i in per_list]
+        UserService(db).def_add_permissions(permisison)
+    if name is not None:
+        query = UserService(db).role_update(name=name,role_id=role_id)
+    return {'success':True}
+@user_router.post('/roles',response_model=RolesGet,tags=['Users'])
+async def role_create(form_data:RolesCreate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = UserService(db).create_role(name=form_data.name)
+    return query
+
+
+@user_router.get('/roles',response_model=list[RolesGet],tags=['Users'])
+async def get_roles_list(id:Optional[int]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = UserService(db).get_roles(id)
+    return query
+
+@user_router.get('/pages',response_model=list[PagesGet],tags=['Users'])
+async def get_pages(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = UserService(db).get_pages()
+    return query
+
+
+
+
+
+
+
+

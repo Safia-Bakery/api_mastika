@@ -177,47 +177,73 @@ class ProductsFilter(BaseModel):
     class Config:
         orm_mode=True
 
+class GetBranchs(BaseModel):
+    id:UUID
+    name:str
+    latitude:Optional[float]=None
+    langtitude:Optional[float]=None
+    country:Optional[str]=None
+    status:int
+    is_fabrica:Optional[int]=None
+    class Config:
+        orm_mode=True
+
+class GetDepartments(BaseModel):
+    id:UUID
+    name:str
+    branch_id:UUID
+    origin:int
+    status:int
+    branch_dr:Optional[GetBranchs]=None
+    class Config:
+        orm_mode=True
+
+
 class OrderProductsGet(BaseModel):
-    id:int
-    order_product:Optional[ProductsFilter]=None
-    product_id:UUID
+    id:Optional[int]=None
+    order_vs_product:ProductsFilter
+    product_id:Optional[UUID]=None
     comment:Optional[str]=None
-    amount:int
+    amount:Optional[int]=None
     class Config:
         orm_mode=True
 
 class GetOrdervsId(BaseModel):
     id:int
+    order_user:Optional[str]=None
     order_vs_user:User
     phone_number:Optional[str]=None
     extra_number:Optional[str]=None
-    location:Optional[str]=None
-    payment_type:int
-    firstly_payment:int
-    is_delivery:int
+    payment_type:Optional[int]=None
+    firstly_payment:Optional[int]=None
+    is_delivery:Optional[int]=None
     comment:Optional[str]=None
     reject_reason:Optional[str]=None
     created_at:datetime
     updated_at:Optional[datetime]=None
-    delivery_date:datetime
+    deliver_date:Optional[datetime]=None
     status:int
-    product_order:Optional[OrderProductsGet]=None
+    #product_order:Optional[list[OrderProductsGet]]=None
     address:Optional[str]=None
     apartment:Optional[str]=None
     home:Optional[str]=None
     near_to:Optional[str]=None
-    order_vs_category:GetCategory
-
-
+    order_vs_category:Optional[GetCategory]=None
+    lat : Optional[str]=None
+    long:Optional[str]=None
+    order_br:Optional[GetDepartments]=None
+    product_order:Optional[list[OrderProductsGet]]=None
     class Config:
         orm_mode=True
 
+
+
 class OrderFromValue(BaseModel):
     id:int
-    content:Optional[str]
-    order_id:int
-    subcat_id:int
-    value_vs_subcat:GetSubCat
+    content:Optional[str]=None
+    order_id:Optional[int]=None
+    subcat_id:Optional[int]=None
+    value_vs_subcat:Optional[GetSubCat]=None
     select_id:Optional[int]=None
     value_vs_select:Optional[SelectViewGet]=None
     selchild_id:Optional[int]=None
@@ -231,6 +257,13 @@ class BaseOrder(BaseModel):
     value:list[OrderFromValue]
     class Config:
         orm_mode=True 
+class Departments_get(BaseModel):
+    id:UUID
+    name:str
+    origin:int
+    status:int
+    class Config:
+        orm_mode=True 
 
 class Branches_list(BaseModel):
     id:UUID
@@ -240,6 +273,7 @@ class Branches_list(BaseModel):
     country :str
     status:int
     is_fabrica:Optional[int]=None
+    department_br:list[Departments_get]
     class Config:
         orm_mode=True 
 

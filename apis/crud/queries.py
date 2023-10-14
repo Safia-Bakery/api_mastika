@@ -297,9 +297,11 @@ def insert_departments(db:Session,items):
     return True
 
 
-def get_branches_list(db:Session):
-    query = db.query(models.Branchs).filter(models.Branchs.status==1).all()
-    return query
+def get_branches_list(db:Session,id):
+    query = db.query(models.Branchs)
+    if id is not None:
+        query = query.filter(models.Branchs.id==id)
+    return query.all()
 
 
 def get_dep_with_branch(db:Session,id):
