@@ -161,7 +161,6 @@ class GetSubCatWithId(BaseModel):
 
 class GetCategoryWithId(BaseModel):
     name:Optional[str]=None
-    price:Optional[float]=None
     id:Optional[int]=None
     status:int
     category_vs_subcategory:list[GetSubCatWithId]
