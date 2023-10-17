@@ -16,8 +16,8 @@ class UserService:
         
         
         return result.all()
-    def create_user(self,username,password,phone_number):
-        query = Users(username=username,password=password,phone_number=phone_number)
+    def create_user(self,username,password,phone_number,full_name,status,role_id):
+        query = Users(username=username,password=password,phone_number=phone_number,full_name=full_name,status=status,role_id=role_id)
         self.db.add(query)
         self.db.commit()
         self.db.refresh(query)
@@ -47,10 +47,8 @@ class UserService:
                 query.password = hash_password(password=form_data.password)
             if form_data.phone_number is not None:
                 query.phone_number = form_data.phone_number
-            if form_data.first_name is not None:
-                query.first_name=form_data.first_name
-            if form_data.last_name is not None:
-                query.last_name = form_data.last_name
+            if form_data.full_name is not None:
+                query.full_name=form_data.full_name
             if form_data.status is not None:
                 query.status=form_data.status
             if form_data.role_id is not None:
@@ -64,6 +62,7 @@ class UserService:
         self.db.query(Permissions).filter(Permissions.role_id==id).delete()
         self.db.commit()
         return True
+
     def def_add_permissions(self,per_obj):
         self.db.bulk_save_objects(per_obj)
         self.db.commit()

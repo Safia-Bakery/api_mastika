@@ -18,7 +18,7 @@ async def create_user(form_data:UserInsertSch,db:Session=Depends(get_db)):
         if user:
             return user
         password  = hash_password(password=form_data.password)
-        query  = UserService(db).create_user(form_data.username,password=password,phone_number=phone_number)
+        query  = UserService(db).create_user(form_data.username,password=password,phone_number=phone_number,full_name=form_data.full_name,status=form_data.status,role_id=form_data.role_id)
         return query
     except:
         raise HTTPException(

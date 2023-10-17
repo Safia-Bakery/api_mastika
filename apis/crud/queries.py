@@ -350,5 +350,9 @@ def get_products(db:Session,id:Optional[UUID]=None,group_id:Optional[UUID]=None,
 
 
 
+def get_subcategory_with_id(db:Session,id):
+    query = db.query(models.SubCategory).filter(models.SubCategory.id==id).first()
+    return query
+
 
     

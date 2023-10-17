@@ -1,53 +1,6 @@
 from pydantic import BaseModel,validator
 from typing import Optional
 from datetime import datetime
-class User(BaseModel):
-    username:Optional[str]=None
-    status:int
-    created_at:datetime
-    first_name:Optional[str]=None
-    last_name:Optional[str]=None
-    is_client:Optional[int]=None
-    id:int
-    role_id:Optional[int]
-
-    phone_number:Optional[str]=None
-    class Config:
-        orm_mode=True
-
-
-class UserInsertSch(BaseModel):
-    username:str
-    password:str
-    phone_number:Optional[str]=None
-    @validator('password')
-    def validate_password_length(cls, password):
-        if len(password) < 6:
-            raise ValueError("Password must be at least 6 characters long")
-        return password
-
-
-class UserUpdate(BaseModel):
-    id:int
-    username:Optional[str]=None
-    status:Optional[int]=None
-    first_name:Optional[str]=None
-    last_name:Optional[str]=None
-    role_id:Optional[int]=None
-    phone_number:Optional[int]=None
-    password:Optional[str]=None
-    class Config:
-        orm_mode=True
-
-    @validator('password')
-    def validate_password_length(cls, password):
-        if len(password) < 6:
-            raise ValueError("Password must be at least 6 characters long")
-        return password
-    
-
-class RolesCreate(BaseModel):
-    name:str
 
 class PageCrud(BaseModel):
     id:int
@@ -75,6 +28,58 @@ class RolesGet(BaseModel):
     role_permission : list[RolePermission]
     class Config:
         orm_mode=True
+class User(BaseModel):
+    username:Optional[str]=None
+    status:int
+    created_at:datetime
+    full_name:Optional[str]=None
+    is_client:Optional[int]=None
+    id:int
+    role_id:Optional[int]=None
+    phone_number:Optional[str]=None
+    user_role :Optional[RolesGet]=None
+    class Config:
+        orm_mode=True
+
+
+class UserInsertSch(BaseModel):
+    username:str
+    password:str
+    phone_number:Optional[str]=None
+    role_id:Optional[int]=None
+    full_name:Optional[str]=None
+    status:Optional[int]=None
+    @validator('password')
+    def validate_password_length(cls, password):
+        if len(password) < 6:
+            raise ValueError("Password must be at least 6 characters long")
+        return password
+
+
+class UserUpdate(BaseModel):
+    id:int
+    username:Optional[str]=None
+    status:Optional[int]=None
+    full_name:Optional[str]=None
+    role_id:Optional[int]=None
+    phone_number:Optional[int]=None
+    password:Optional[str]=None
+    class Config:
+        orm_mode=True
+
+    @validator('password')
+    def validate_password_length(cls, password):
+        if len(password) < 6:
+            raise ValueError("Password must be at least 6 characters long")
+        return password
+    
+
+class RolesCreate(BaseModel):
+    name:str
+
+
+
+
 
 
     
