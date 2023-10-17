@@ -224,9 +224,10 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
 
 
 @api_router.post('/v1/orders/products')
-async def product_add(form_data:api_schema.OrderProducts,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
-    query =queries.create_order_products(db=db,form_data=form_data)
-    return query
+async def product_add(form_data:list[api_schema.OrderProducts],db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    for i in form_data:
+        query =queries.create_order_products(db=db,form_data=i)
+    return {'success':True}
 
 
 @api_router.get('/v1/orders',response_model=api_schema.BaseOrder)
