@@ -200,42 +200,44 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
 
 def update_order(db:Session,form_data:api_schema.OrderUpdate):
     query = db.query(models.Order).filter(models.Order.id==form_data.id).first()
-    if form_data.order_user is not None:
-        query.order_user= form_data.order_user
-    if form_data.phone_number is not None:
-        query.phone_number = form_data.phone_number
-    if form_data.extra_number is not None:
-        query.extra_number = form_data.extra_number
-    if form_data.payment_type is not None:
-        query.payment_type =form_data.payment_type
-    if form_data.firstly_payment is not None:
-        query.firstly_payment =form_data.firstly_payment
-    if form_data.is_delivery is not None:
-        query.is_delivery = form_data.is_delivery
-    if form_data.comment is not None:
-        query.comment = form_data.comment
-    if form_data.deliver_date is not None:
-        query.deliver_date = form_data.deliver_date
-    if form_data.address is not None:
-        query.address = form_data.address
-    if form_data.apartment is not None:
-        query.apartment = form_data.apartment
-    if form_data.home is not None:
-        query.home = form_data.home
-    if form_data.near_to is not None:
-        query.near_to = form_data.near_to
-    if form_data.department_id  is not None:
-        query.department_id = form_data.department_id
-    if form_data.category_id is not None:
-        query.category_id =form_data.category_id
-    if form_data.status is not None:
-        query.status = form_data.status
-    if form_data.lat is not None:
-        query.lat = form_data.lat
-    if form_data.long is not None:
-        query.long = form_data.long
-    db.commit()
-    db.refresh(query)
+    if query:
+        
+        if form_data.order_user is not None:
+            query.order_user= form_data.order_user
+        if form_data.phone_number is not None:
+            query.phone_number = form_data.phone_number
+        if form_data.extra_number is not None:
+            query.extra_number = form_data.extra_number
+        if form_data.payment_type is not None:
+            query.payment_type =form_data.payment_type
+        if form_data.firstly_payment is not None:
+            query.firstly_payment =form_data.firstly_payment
+        if form_data.is_delivery is not None:
+            query.is_delivery = form_data.is_delivery
+        if form_data.comment is not None:
+            query.comment = form_data.comment
+        if form_data.deliver_date is not None:
+            query.deliver_date = form_data.deliver_date
+        if form_data.address is not None:
+            query.address = form_data.address
+        if form_data.apartment is not None:
+            query.apartment = form_data.apartment
+        if form_data.home is not None:
+            query.home = form_data.home
+        if form_data.near_to is not None:
+            query.near_to = form_data.near_to
+        if form_data.department_id  is not None:
+            query.department_id = form_data.department_id
+        if form_data.category_id is not None:
+            query.category_id =form_data.category_id
+        if form_data.status is not None:
+            query.status = form_data.status
+        if form_data.lat is not None:
+            query.lat = form_data.lat
+        if form_data.long is not None:
+            query.long = form_data.long
+        db.commit()
+        db.refresh(query)
     return query
 
 

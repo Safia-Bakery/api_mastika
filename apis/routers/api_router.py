@@ -181,9 +181,10 @@ async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depen
 @api_router.post('/v1/orders/dynamic')
 async def getdynamic_values(request:Request,db:Session=Depends(get_db)):#,request_user:User=Depends(get_current_user)):
     form_data = await request.form()
+    
     order_id = form_data['order_id']
     for field_name,field_value in form_data.items():
-        #try:
+        #tr
             if 'child' in field_name:
                 field_id = re.findall(r'\d+',field_name)
                 subcat_id = field_id[0]
@@ -192,23 +193,24 @@ async def getdynamic_values(request:Request,db:Session=Depends(get_db)):#,reques
                     table_data = models.Value(subcat_id=subcat_id,order_id=order_id,selchild_id=field_value)
                     queries.create_value_order(db=db,table=table_data)
             else:
-                subcat_id = int(field_name)
-                subcategory = queries.get_subcategory_with_id(db=db,id=subcat_id)
-                if subcategory.contenttype_id ==1:
-                    table_data = models.Value(subcat_id=subcat_id,order_id=order_id,content=field_value)
-                    queries.create_value_order(db=db,table=table_data)
-                if subcategory.contenttype_id==2:
-                    generated_filename = generate_random_filename()+form_data[field_name].filename
-                    table_data = models.Value(subcat_id=subcat_id,order_id=order_id,content=generated_filename)
-                    queries.create_value_order(db=db,table=table_data)
-                    with open('files/'+generated_filename, 'wb+') as f:
-                        shutil.copyfileobj(form_data[field_name].file,f)
-                if subcategory.contenttype_id ==3:
-                    table_data = models.Value(subcat_id=subcat_id,order_id=order_id,content=field_value)
-                    queries.create_value_order(db=db,table=table_data)
-                if subcategory.contenttype_id==4:
-                    table_data = models.Value(subcat_id=subcat_id,order_id=order_id,select_id=field_value)
-                    queries.create_value_order(db=db,table=table_data)
+                if field_name !='order_id':
+                    subcat_id = int(field_name)
+                    subcategory = queries.get_subcategory_with_id(db=db,id=subcat_id)
+                    if subcategory.contenttype_id ==1:
+                        table_data = models.Value(subcat_id=subcat_id,order_id=order_id,content=field_value)
+                        queries.create_value_order(db=db,table=table_data)
+                    if subcategory.contenttype_id==2:
+                        generated_filename = generate_random_filename()+form_data[field_name].filename
+                        table_data = models.Value(subcat_id=subcat_id,order_id=order_id,content=generated_filename)
+                        queries.create_value_order(db=db,table=table_data)
+                        with open('files/'+generated_filename, 'wb+') as f:
+                            shutil.copyfileobj(form_data[field_name].file,f)
+                    if subcategory.contenttype_id ==3:
+                        table_data = models.Value(subcat_id=subcat_id,order_id=order_id,content=field_value)
+                        queries.create_value_order(db=db,table=table_data)
+                    if subcategory.contenttype_id==4:
+                        table_data = models.Value(subcat_id=subcat_id,order_id=order_id,select_id=field_value)
+                        queries.create_value_order(db=db,table=table_data)
         #except:
         #    pass
     return {'success':True}
