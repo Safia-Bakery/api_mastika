@@ -60,7 +60,7 @@ async def get_user(db:Session=Depends(get_db),request_user:User=Depends(get_curr
         data = {i.pagecrud_id:True for i in request_user.user_role.role_permission}
         user = {'user':request_user,'permissions':data}
     else:
-        {'user':request_user}
+        user = {'user':request_user}
     return user
 
 @user_router.get('/user/get/create',tags=['users'],response_model=User)
