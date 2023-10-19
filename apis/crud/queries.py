@@ -359,4 +359,16 @@ def get_subcategory_with_id(db:Session,id):
     return query
 
 
+def update_order_product(db:Session,form_data:api_schema.OrderProductUpdate):
+    query = db.query(models.OrderProducts).filter(models.OrderProducts.id==form_data.id).first()
+    if query:
+        if form_data.amount is not None:
+            query.amount = form_data.amount
+        if form_data.comment is not None:
+            query.comment = form_data.comment
+        db.commit()
+    
+    return query
+
+
     

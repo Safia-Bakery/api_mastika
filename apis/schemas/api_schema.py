@@ -334,3 +334,8 @@ class OrderProducts(BaseModel):
     product_id:UUID
     comment:Optional[str]=None
     amount:int
+
+class OrderProductUpdate(BaseModel):
+    id:int
+    comment:Optional[str]=None
+    amount:Optional[int]=None
