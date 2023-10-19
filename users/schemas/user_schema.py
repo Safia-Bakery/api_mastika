@@ -61,6 +61,11 @@ class UserMe(BaseModel):
     user_role :Optional[RolesGet]=None
     class Config:
         orm_mode=True
+class UserBaseme(BaseModel):
+    user:User
+    permissions:dict
+    class Config:
+        orm_mode=True
 
 
 
