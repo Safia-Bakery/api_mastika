@@ -50,7 +50,7 @@ class UserMe(BaseModel):
     id:int
     role_id:Optional[int]=None
     phone_number:Optional[str]=None
-    user_role:Optional[list[int]]=None
+    permissions:Optional[list[int]]=None
     class Config:
         orm_mode=True
 
