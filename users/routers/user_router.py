@@ -58,7 +58,7 @@ async def get_user(is_client:Optional[int]=None,id:Optional[int]=None,db:Session
 async def get_user(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     if request_user.user_role is not None:
         for i in request_user.user_role.role_permission:
-            print(i)
+            print(i.pagecrud_id)
         #request_user.user_role = [i.id for i in request_user.user_role.role_permission ]
         
     return request_user
