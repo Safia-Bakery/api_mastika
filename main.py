@@ -10,6 +10,7 @@ from users.routers.user_router import user_router
 from apis.routers.api_router import api_router
 from fastapi_pagination import paginate,Page,add_pagination
 from apis.models.models import Base
+from fastapi.staticfiles import StaticFiles
 
 app = FastAPI()
 app.title = "Safia FastApi App"
@@ -17,6 +18,7 @@ app.version = "0.0.1"
 app.include_router(user_router)
 app.include_router(api_router)
 Base.metadata.create_all(bind=engine)
+app.mount("/files", StaticFiles(directory="files"), name="files")
 
 origins = ["*"]
 
