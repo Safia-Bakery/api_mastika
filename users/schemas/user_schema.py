@@ -41,6 +41,14 @@ class User(BaseModel):
     class Config:
         orm_mode=True
 
+
+class RolesGetMe(BaseModel):
+    id:int
+    name:str
+    role_permission :dict
+    class Config:
+        orm_mode=True
+
 class UserMe(BaseModel):
     username:Optional[str]=None
     status:int
@@ -50,7 +58,7 @@ class UserMe(BaseModel):
     id:int
     role_id:Optional[int]=None
     phone_number:Optional[str]=None
-    permissions:Optional[list[int]]=None
+    permissions:Optional[RolesGet]=None
     class Config:
         orm_mode=True
 
