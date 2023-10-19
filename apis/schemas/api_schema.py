@@ -326,6 +326,7 @@ class OrderUpdate(BaseModel):
     status:Optional[int]=None
     lat:Optional[str]=None
     long:Optional[str]=None
+    reject_reason:Optional[str]=None
 
 
 class OrderProducts(BaseModel):

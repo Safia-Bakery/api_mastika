@@ -236,6 +236,8 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
             query.lat = form_data.lat
         if form_data.long is not None:
             query.long = form_data.long
+        if form_data.reject_reason is not None:
+            query.reject_reason = form_data.reject_reason
         db.commit()
         db.refresh(query)
     return query

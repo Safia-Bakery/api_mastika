@@ -42,6 +42,7 @@ class User(BaseModel):
         orm_mode=True
 
 
+
 class UserInsertSch(BaseModel):
     username:str
     password:str
