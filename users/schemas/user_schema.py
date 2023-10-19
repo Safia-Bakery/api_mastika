@@ -63,7 +63,7 @@ class UserMe(BaseModel):
         orm_mode=True
 class UserBaseme(BaseModel):
     user:User
-    permissions:dict
+    permissions:Optional[dict]=None
     class Config:
         orm_mode=True
 
