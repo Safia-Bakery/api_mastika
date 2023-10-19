@@ -57,9 +57,8 @@ async def get_user(is_client:Optional[int]=None,id:Optional[int]=None,db:Session
 @user_router.get('/me',tags=['Users'],response_model=UserMe)
 async def get_user(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     if request_user.user_role is not None:
-        for i in request_user.user_role.role_permission:
-            print(i.pagecrud_id)
-        #request_user.user_role = [i.id for i in request_user.user_role.role_permission ]
+       
+        request_user.user_role = [i.pagecrud_id for i in request_user.user_role.role_permission ]
         
     return request_user
 
