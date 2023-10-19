@@ -41,6 +41,19 @@ class User(BaseModel):
     class Config:
         orm_mode=True
 
+class UserMe(BaseModel):
+    username:Optional[str]=None
+    status:int
+    created_at:datetime
+    full_name:Optional[str]=None
+    is_client:Optional[int]=None
+    id:int
+    role_id:Optional[int]=None
+    phone_number:Optional[str]=None
+    user_role :Optional[int]=None
+    class Config:
+        orm_mode=True
+
 
 
 class UserInsertSch(BaseModel):

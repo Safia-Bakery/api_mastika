@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from sqlalchemy.orm import Session
 from users.models.models import Permissions
 from fastapi import Depends,HTTPException,status
-from users.schemas.user_schema import UserInsertSch,User,UserUpdate,RolesCreate,RolesGet,PagesGet
+from users.schemas.user_schema import UserInsertSch,User,UserUpdate,RolesCreate,RolesGet,PagesGet,UserMe
 from users.utils.user_micro import get_db,hash_password,get_current_user,verify_password,create_access_token,create_refresh_token
 from users.crud.queries import UserService
 from fastapi_pagination import paginate,Page,add_pagination
@@ -54,8 +54,9 @@ async def get_user(is_client:Optional[int]=None,id:Optional[int]=None,db:Session
 
 
 
-@user_router.get('/me',tags=['Users'],response_model=User)
+@user_router.get('/me',tags=['Users'],response_model=UserMe)
 async def get_user(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    request_user.user_role = [i['id'] for i in request_user.user_role ]
     return request_user
 
 @user_router.get('/user/get/create',tags=['users'],response_model=User)
