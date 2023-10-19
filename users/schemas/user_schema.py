@@ -45,7 +45,7 @@ class User(BaseModel):
 class RolesGetMe(BaseModel):
     id:int
     name:str
-    role_permission :dict
+    role_permission :list[int]
     class Config:
         orm_mode=True
 
