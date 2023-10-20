@@ -5,6 +5,7 @@ from typing import Optional
 from sqlalchemy.orm import joinedload
 from sqlalchemy.exc import IntegrityError
 from uuid import UUID
+from sqlalchemy import cast, Date
 
 
 def create_cat(db:Session,name):
@@ -270,9 +271,19 @@ def get_values_oforder(db:Session,id):
     query = db.query(models.Value).filter(models.Value.order_id==id).all()
     return query
 
-def getOrderList(db:Session):
-    query = db.query(models.Order).all()
-    return query
+def getOrderList(db:Session,status,cake,is_delivery,created_at,branch_id):
+    query = db.query(models.Order).join(models.OrderProducts).join(models.Departments)
+    if status is not None:
+        query = query.filter(models.Order.status==status)
+    if cake is not None:
+        query = query.filter(models.OrderProducts.product_id==cake)
+    if is_delivery is not None:
+        query = query.filter(models.Order.is_delivery==is_delivery)
+    if created_at is not None:
+        query = query.filter(cast(models.Order.created_at,Date)==created_at)
+    if branch_id is not None:
+        query = query.filter(models.Departments.branch_id==branch_id)
+    return query.all()
 
 
 

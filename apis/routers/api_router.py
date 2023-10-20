@@ -5,6 +5,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends
 from uuid import UUID
 from apis.crud import queries
+from datetime import datetime,date
 from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
 from typing import Optional,Union
@@ -243,7 +244,7 @@ async def get_one_order(id:int,db:Session=Depends(get_db),request_user:User=Depe
         return {'order':query}
 
 @api_router.get('/v1/orders/all',response_model=Page[api_schema.GetOrdervsId])
-async def get_one_order(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+async def get_one_order(status:Optional[int]=None,cake:Optional[UUID]=None,is_delivery:Optional[int]=None,created_at:Optional[date]=None,branch_id:Optional[UUID]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     
     query = queries.getOrderList(db=db)
     return paginate(query)
