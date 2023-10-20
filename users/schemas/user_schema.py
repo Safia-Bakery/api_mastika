@@ -25,7 +25,7 @@ class RolePermission(BaseModel):
 class RolesGet(BaseModel):
     id:int
     name:str
-    role_permission : list[RolePermission]
+    #role_permission : list[RolePermission]
     class Config:
         orm_mode=True
 class User(BaseModel):
