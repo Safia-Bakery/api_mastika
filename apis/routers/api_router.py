@@ -288,7 +288,6 @@ async def get_product_list(db:Session=Depends(get_db),id:Optional[UUID]=None,gro
 @api_router.put('/v1/products')
 async def update_product(form_data:api_schema.OrderProductUpdate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     query = queries.update_order_product(db=db,form_data=form_data)
-
     return {'success':True}
 
 
