@@ -247,6 +247,7 @@ async def get_one_order(id:int,db:Session=Depends(get_db),request_user:User=Depe
 async def get_one_order(status:Optional[int]=None,cake:Optional[UUID]=None,is_delivery:Optional[int]=None,created_at:Optional[date]=None,branch_id:Optional[UUID]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     
     query = queries.getOrderList(db=db,status=status,cake=cake,is_delivery=is_delivery,created_at=created_at,branch_id=branch_id)
+    print(query.count())
     return paginate(query)
     
 
