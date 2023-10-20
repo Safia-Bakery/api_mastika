@@ -272,7 +272,7 @@ def get_values_oforder(db:Session,id):
     return query
 
 def getOrderList(db:Session,status,cake,is_delivery,created_at,branch_id):
-    query = db.query(models.Order).join(models.OrderProducts,models.OrderProducts.order_id==models.Order.id).join(models.Departments,models.Order.department_id==models.Departments.id)
+    query = db.query(models.Order)
     if status is not None:
         query = query.filter(models.Order.status==status)
     if cake is not None:
