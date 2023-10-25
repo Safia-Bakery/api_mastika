@@ -87,6 +87,10 @@ class UserService:
     def get_pages(self,):
         query = self.db.query(Pages).all()
         return query
+    def all_permissions(self):
+        query = self.db.query(PageCrud).all()
+        return query
+    
         
     
     

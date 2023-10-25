@@ -14,8 +14,30 @@ class Category(Base):
     id = Column(Integer,primary_key=True,index=True)
     name = Column(VARCHAR(length=255))
     status = Column(Integer,default=1)
+    image = Column(String,nullable=True)
     category_vs_order = relationship('Order',back_populates='order_vs_category')
     category_vs_subcategory = relationship('SubCategory',back_populates='subcategory_vs_category')
+    c_filling = relationship('Fillings',back_populates='filling')
+
+
+"""
+0=average
+1=difficult
+2=parties and weddings
+"""
+
+class Fillings(Base):
+    __tablename__ = "fillings"
+    id = Column(Integer,index=True,primary_key=True)
+    name = Column(String)
+    status = Column(Integer,default=1)
+    ptype = Column(Integer,nullable=True)
+    category_id = Column(Integer,ForeignKey('categories.id'))
+    filling = relationship('Category',back_populates='c_filling')
+    filler_order = relationship('OrderFilling',back_populates='filler')
+
+
+
 
 
 """
@@ -25,6 +47,7 @@ system (0=mastika otdel, 1=telegram bot, 2=sayt)
 status (0=new created, 1= accepted, 2=rejected)
 is_delivery (1=yes , 0=No)
 """
+
 class Order(Base):
     __tablename__ = 'orders'
     id = Column(Integer,primary_key=True,index=True)
@@ -54,7 +77,17 @@ class Order(Base):
     order_vs_value = relationship('Value',back_populates='value_vs_order')
     lat = Column(String,nullable=True)
     long = Column(String,nullable=True)
+    complexity = Column(Integer,nullable=True)
+    order_fill = relationship('OrderFilling',back_populates='fill_order')
 
+class OrderFilling(Base):
+    __tablename__ = 'orderfilling'
+    id = Column(Integer,primary_key=True,index=True)
+    order_id = Column(Integer,ForeignKey('orders.id'))
+    fill_order = relationship('Order',back_populates='order_fill')
+    filling_id = Column(Integer,ForeignKey('fillings.id'))
+    filler = relationship('Fillings',back_populates='filler_order')
+    floor = Column(Integer,nullable=True)
 
 class OrderProducts(Base):
     __tablename__='orderproducts'
@@ -65,6 +98,8 @@ class OrderProducts(Base):
     order_vs_product = relationship('Products',back_populates='product_vs_order')
     comment = Column(String,nullable=True)
     amount = Column(Integer)
+    floor = Column(Integer,nullable=True)
+    portion = Column(Integer,nullable=True)
 
 
 

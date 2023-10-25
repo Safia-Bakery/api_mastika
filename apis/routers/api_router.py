@@ -10,20 +10,31 @@ from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
 from typing import Optional,Union
 from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups
-from fastapi import Request
+from fastapi import Request,Form,UploadFile,File
 import shutil
 from fastapi_pagination import paginate,Page,add_pagination
 import re
+from typing import Annotated
 from apis.models import models
 
 mastika  = ['30ed6a72-8771-4c81-91ad-e4b71305858d','d9dadbb0-8b97-4666-b740-fcfa47d11419','05b75ddf-3b87-4d1c-9483-5664f29d2c94','4c169130-114a-4314-989e-c48717ceb4e6']
-
 api_router = APIRouter()
 
 
 @api_router.post('/v1/category')
-async def create_category(form_data:api_schema.CreateCategory,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
-    query = queries.create_cat(db=db,name=form_data.name)
+async def create_category(name:Annotated[str,Form()],image:UploadFile = File(None),db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
+    if image:
+        #for file in image:
+        folder_name = f"files/{generate_random_filename()+image.filename}"
+        with open(folder_name, "wb") as buffer:
+            while True:
+                chunk = await image.read(1024)
+                if not chunk:
+                    break
+                buffer.write(chunk)
+        image=folder_name
+    
+    query = queries.create_cat(db=db,name=name,image=image)
     return {'success':True,'message':'this api currently inactive you data  will not be added to category list'}
 
 
@@ -128,7 +139,13 @@ async def get_category_with_id(id:int,db:Session=Depends(get_db),request_user:Us
     query = queries.get_category_withid(db=db,id=id)
     return query
 
-
+"""
+{
+'1':{
+    'floor':int
+    }
+}
+"""
 
 @api_router.post('/v1/orders')
 async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
@@ -146,6 +163,10 @@ async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depen
     #    branch_id=None
 
     order_cr = queries.create_order(db=db,user_id=request_user.id,form_data=form_data)
+    if order_cr:
+        if form_data.filler is not None:
+            for key,item in form_data.filler.items():
+                query = queries.add_order_filling(db=db,order_id=order_cr.id,filling_id=key,floor=item['floor'])
     
     #for field_name,field_value in form_data.items():
     #    
@@ -171,7 +192,6 @@ async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depen
     #        subcat_id = field_id[0]
     #        table_data = models.Value(subcat_id=subcat_id,order_id=order_cr.id,content=field_value)
     #        queries.create_value_order(db=db,table=table_data)
-#
     #    if 'integer' in field_name:
     #        field_id = re.findall(r'\d+',field_name)
     #        subcat_id = field_id[0]
@@ -182,7 +202,6 @@ async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depen
 @api_router.post('/v1/orders/dynamic')
 async def getdynamic_values(request:Request,db:Session=Depends(get_db)):#,request_user:User=Depends(get_current_user)):
     form_data = await request.form()
-    
     order_id = form_data['order_id']
     for field_name,field_value in form_data.items():
         #tr
@@ -291,6 +310,20 @@ async def update_product(form_data:api_schema.OrderProductUpdate,db:Session=Depe
     return {'success':True}
 
 
+@api_router.post('/v1/fillings',response_model=api_schema.FillingGet)
+async def add_fillings(form_data:api_schema.FillingAddGet,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = queries.add_filling(db=db,form_data=form_data)
+    return query
+
+@api_router.put('/v1/fillings',response_model=api_schema.FillingGet)
+async def update_filling(form_data:api_schema.FillingUpdate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = queries.update_filling(db=db,form_data=form_data)
+    return query
+
+@api_router.get('/v1/fillings',response_model=list[api_schema.FillingGet])
+async def filter_fillings(id:Optional[int]=None,name:Optional[str]=None,ptype:Optional[int]=None,status:Optional[int]=None,category_id:Optional[int]=None,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = queries.get_filling(db=db,id=id,ptype=ptype,name=name,status=status,category_id=category_id)
+    return query
 
 
 

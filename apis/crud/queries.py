@@ -8,9 +8,9 @@ from uuid import UUID
 from sqlalchemy import cast, Date
 
 
-def create_cat(db:Session,name):
+def create_cat(db:Session,name,image):
     try:
-        query = models.Category(name=name)
+        query = models.Category(name=name,image=image)
         db.add(query)
         db.commit()
         db.refresh(query)
@@ -190,7 +190,8 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
                          user_id=user_id,
                          category_id=form_data.category_id,
                          lat=form_data.lat,
-                         long=form_data.long)
+                         long=form_data.long,
+                         complexity =form_data.complexity)
 
     db.add(query)
     db.commit()
@@ -239,6 +240,8 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
             query.long = form_data.long
         if form_data.reject_reason is not None:
             query.reject_reason = form_data.reject_reason
+        if form_data.complexity is not None:
+            query.complexity ==form_data.complexity
         db.commit()
         db.refresh(query)
     return query
@@ -246,7 +249,7 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
 
 
 def create_order_products(db:Session,form_data:api_schema.OrderProducts):
-    query = models.OrderProducts(order_id=form_data.order_id,product_id=form_data.product_id,comment=form_data.comment,amount=form_data.amount)
+    query = models.OrderProducts(order_id=form_data.order_id,product_id=form_data.product_id,comment=form_data.comment,amount=form_data.amount,floor=form_data.floor,portion=form_data.portion)
     db.add(query)
     db.commit()
     db.refresh(query)
@@ -377,9 +380,52 @@ def update_order_product(db:Session,form_data:api_schema.OrderProductUpdate):
             query.amount = form_data.amount
         if form_data.comment is not None:
             query.comment = form_data.comment
+        if form_data.floor is not None:
+            query.floor = form_data.floor
+        if form_data.portion is not None:
+            query.portion=form_data.portion
         db.commit()
     
     return query
 
 
-    
+def add_filling(db:Session,form_data:api_schema.FillingAddGet):
+    query = models.Fillings(name=form_data.name,ptype=form_data.ptype,category_id=form_data.category_id)
+    db.add(query)
+    db.commit()
+    db.refresh(query)
+
+    return query
+
+def update_filling(db:Session,form_data:api_schema.FillingUpdate):
+    query = db.query(models.Fillings).filter(models.Fillings.id==form_data.id).first()
+    if query:
+        if form_data.name is not None:
+            query.name=form_data.name
+        if form_data.status is not None:
+            query.status = form_data.status
+        if form_data.ptype is not None:
+            query.ptype=form_data.ptype
+        db.commit()
+    return query
+
+def get_filling(db:Session,id,ptype,status,name,category_id):
+    query = db.query(models.Fillings)
+    if id is not None:
+        query = query.filter(models.Fillings.id==id)
+    if ptype is not None:
+        query = query.filter(models.Fillings.ptype==ptype)
+    if status is not None:
+        query = query.filter(models.Fillings.status==status)
+    if name is not None:
+        query = query.filter(models.Fillings.name.ilike(f"%{name}%"))
+    if category_id is not None:
+        query = query.filter(models.Fillings.category_id==category_id)
+    return query.all()
+
+
+def add_order_filling(db:Session,order_id,filling_id,floor):
+    query = models.OrderFilling(order_id=order_id,filling_id=filling_id,floor=floor)
+    db.add(query)
+    db.commit()
+    return True

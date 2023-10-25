@@ -1,4 +1,4 @@
-from typing import Optional ,Literal
+from typing import Optional ,Literal,Dict
 from pydantic import BaseModel,Field
 from pydantic import validator
 from users.schemas.user_schema import User
@@ -13,6 +13,7 @@ class CreateCategory(BaseModel):
 class GetCategory(BaseModel):
     name:Optional[str]=None
     id:Optional[int]=None
+    image:Optional[str]=None
     status:int
     class Config:
         orm_mode=True
@@ -158,14 +159,42 @@ class GetSubCatWithId(BaseModel):
     class Config:
         orm_mode=True
 
+class FillingAddGet(BaseModel):
+    name:str
+    category_id:int
+    ptype:int
+    class Config:
+        orm_mode=True
+
+
+
+class FillingGet(BaseModel):
+    id:int
+    name:str
+    category_id:int
+    ptype:int
+    class Config:
+        orm_mode=True
+
+
+class FillingUpdate(BaseModel):
+    id:int
+    name:Optional[str]=None
+    status:Optional[str]=None
+    ptype:Optional[int]=None
+
+
 
 class GetCategoryWithId(BaseModel):
     name:Optional[str]=None
     id:Optional[int]=None
     status:int
+    c_filling:Optional[FillingAddGet]=None
     category_vs_subcategory:list[GetSubCatWithId]
     class Config:
         orm_mode=True
+
+
 class ProductsFilter(BaseModel):
     id:UUID
     status:int
@@ -204,6 +233,8 @@ class OrderProductsGet(BaseModel):
     product_id:Optional[UUID]=None
     comment:Optional[str]=None
     amount:Optional[int]=None
+    floor:Optional[int]=None
+    portion:Optional[int]=None
     class Config:
         orm_mode=True
 
@@ -229,6 +260,7 @@ class GetOrdervsId(BaseModel):
     near_to:Optional[str]=None
     order_vs_category:Optional[GetCategory]=None
     lat : Optional[str]=None
+    complexity :Optional[int]=None
     long:Optional[str]=None
     order_br:Optional[GetDepartments]=None
     product_order:Optional[list[OrderProductsGet]]=None
@@ -303,6 +335,8 @@ class OrderCreation(BaseModel):
     category_id:Optional[int]=None
     lat:Optional[str]=None
     long:Optional[str]=None
+    complexity:Optional[int]=None
+    filler:Optional[Dict[str,Dict[str,str]]]=None
 
 
 
@@ -327,6 +361,7 @@ class OrderUpdate(BaseModel):
     lat:Optional[str]=None
     long:Optional[str]=None
     reject_reason:Optional[str]=None
+    complexity :Optional[int]=None
 
 
 class OrderProducts(BaseModel):
@@ -334,8 +369,21 @@ class OrderProducts(BaseModel):
     product_id:UUID
     comment:Optional[str]=None
     amount:int
+    floor:Optional[int]=None
+    portion :Optional[int]=None
+
 
 class OrderProductUpdate(BaseModel):
     id:int
     comment:Optional[str]=None
     amount:Optional[int]=None
+    floor:Optional[int]=None
+    portion:Optional[int]=None
+
+
+
+
+
+
+
+
