@@ -168,7 +168,7 @@ class FillingAddGet(BaseModel):
 
 
 
-class FillingGet(BaseModel):
+class       FillingGet(BaseModel):
     id:int
     name:str
     category_id:int
@@ -238,6 +238,14 @@ class OrderProductsGet(BaseModel):
     class Config:
         orm_mode=True
 
+class OrderFillingGet(BaseModel):
+    id:int
+    filling_id:int
+    floor:int
+    filler:Optional[FillingGet]=None
+    class Config:
+        orm_mode=True
+
 class GetOrdervsId(BaseModel):
     id:int
     order_user:Optional[str]=None
@@ -264,6 +272,8 @@ class GetOrdervsId(BaseModel):
     long:Optional[str]=None
     order_br:Optional[GetDepartments]=None
     product_order:Optional[list[OrderProductsGet]]=None
+    order_fill:Optional[list[OrderFillingGet]]
+    packaging:Optional[int]=None
     class Config:
         orm_mode=True
 
@@ -288,6 +298,7 @@ class BaseOrder(BaseModel):
     value:list[OrderFromValue]
     class Config:
         orm_mode=True 
+
 class Departments_get(BaseModel):
     id:UUID
     name:str
@@ -337,6 +348,7 @@ class OrderCreation(BaseModel):
     long:Optional[str]=None
     complexity:Optional[int]=None
     filler:Optional[Dict[str,Dict[str,str]]]=None
+    packaging:Optional[int]=None
 
 
 

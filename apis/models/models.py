@@ -78,6 +78,7 @@ class Order(Base):
     lat = Column(String,nullable=True)
     long = Column(String,nullable=True)
     complexity = Column(Integer,nullable=True)
+    packaging = Column(Integer,nullable=True)
     order_fill = relationship('OrderFilling',back_populates='fill_order')
 
 class OrderFilling(Base):

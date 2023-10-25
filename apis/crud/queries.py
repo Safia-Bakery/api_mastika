@@ -191,7 +191,8 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
                          category_id=form_data.category_id,
                          lat=form_data.lat,
                          long=form_data.long,
-                         complexity =form_data.complexity)
+                         complexity =form_data.complexity,
+                         packaging=form_data.packaging)
 
     db.add(query)
     db.commit()
