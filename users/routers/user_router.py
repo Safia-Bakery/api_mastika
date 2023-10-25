@@ -62,7 +62,6 @@ async def get_user(db:Session=Depends(get_db),request_user:User=Depends(get_curr
         user = {'user':request_user,'permissions':data}
         return user
     if request_user.user_role is not None:
-        print('hell')
         data = {str(i.pagecrud_id):True for i in request_user.user_role.role_permission}
         user = {'user':request_user,'permissions':data}
         return user
