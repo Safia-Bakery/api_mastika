@@ -1,5 +1,5 @@
 from pydantic import BaseModel,validator
-from typing import Optional
+from typing import Optional,Dict
 from datetime import datetime
 
 class PageCrud(BaseModel):
@@ -63,7 +63,7 @@ class UserMe(BaseModel):
         orm_mode=True
 class UserBaseme(BaseModel):
     user:User
-    permissions:Optional[dict]=None
+    permissions:Optional[Dict[str,bool]]=None
     class Config:
         orm_mode=True
 

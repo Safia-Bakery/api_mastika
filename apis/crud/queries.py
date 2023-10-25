@@ -41,13 +41,15 @@ def get_categories_iiko(db:Session):
 
 
 
-def update_category(db:Session,form_data:api_schema.GetCategory):
-    query = db.query(models.Category).filter(models.Category.id==form_data.id).first()
+def update_category(db:Session,name,status,image,id):
+    query = db.query(models.Category).filter(models.Category.id==id).first()
     if query:
-        if form_data.status is not None:
-            query.status=form_data.status
-        if form_data.name is not None:
-            query.name = form_data.name
+        if status is not None:
+            query.status=status
+        if name is not None:
+            query.name = name
+        if image is not None:
+            query.image=image
 
         db.commit()
         db.refresh(query)

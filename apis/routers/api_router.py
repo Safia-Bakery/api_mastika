@@ -44,8 +44,18 @@ async def get_filter_category(name:Optional[str]=None,id:Optional[int]=None,stat
     return query
 
 @api_router.put('/v1/category',response_model=api_schema.GetCategory)
-async def update_category(form_data:api_schema.GetCategory,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
-    query = queries.update_category(form_data=form_data,db=db)
+async def update_category(id:Annotated[int,Form()],name:Annotated[str,Form()]=None,status:Annotated[str,Form()]=None,image:UploadFile = File(None),db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
+    if image is not None:
+        #for file in image:
+        folder_name = f"files/{generate_random_filename()+image.filename}"
+        with open(folder_name, "wb") as buffer:
+            while True:
+                chunk = await image.read(1024)
+                if not chunk:
+                    break
+                buffer.write(chunk)
+        image=folder_name
+    query = queries.update_category(id=id,image=image,name=name,status=status,db=db)
     return query
 
 
