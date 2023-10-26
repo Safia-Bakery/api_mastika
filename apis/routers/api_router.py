@@ -192,7 +192,7 @@ async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depen
     if order_cr:
         if form_data.filler is not None:
             for key,item in form_data.filler.items():
-                query = queries.add_order_filling(db=db,order_id=order_cr.id,filling_id=key,floor=item)
+                query = queries.add_order_filling(db=db,order_id=order_cr.id,filling_id=item,floor=key)
     
     #for field_name,field_value in form_data.items():
     #    
