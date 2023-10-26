@@ -274,6 +274,7 @@ class GetOrdervsId(BaseModel):
     product_order:Optional[list[OrderProductsGet]]=None
     order_fill:Optional[list[OrderFillingGet]]
     packaging:Optional[int]=None
+    images:Optional[list[str]]=None
     class Config:
         orm_mode=True
 
@@ -349,6 +350,7 @@ class OrderCreation(BaseModel):
     complexity:Optional[int]=None
     filler:Optional[Dict[str,Dict[str,str]]]=None
     packaging:Optional[int]=None
+    images:Optional[list[str]]=None
 
 
 

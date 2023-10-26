@@ -37,6 +37,19 @@ async def create_category(name:Annotated[str,Form()],image:UploadFile = File(Non
     query = queries.create_cat(db=db,name=name,image=image)
     return {'success':True,'message':'this api currently inactive you data  will not be added to category list'}
 
+@api_router.post('/v1/image/upload')
+async def image_upload(image:UploadFile,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
+    if image:
+        #for file in image:
+        folder_name = f"files/{generate_random_filename()+image.filename}"
+        with open(folder_name, "wb") as buffer:
+            while True:
+                chunk = await image.read(1024)
+                if not chunk:
+                    break
+                buffer.write(chunk)
+    return folder_name
+
 
 @api_router.get('/v1/category',response_model=list[api_schema.GetCategory])
 async def get_filter_category(name:Optional[str]=None,id:Optional[int]=None,status:Optional[int]=None,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
