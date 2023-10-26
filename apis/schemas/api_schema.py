@@ -275,6 +275,8 @@ class GetOrdervsId(BaseModel):
     order_fill:Optional[list[OrderFillingGet]]
     packaging:Optional[int]=None
     images:Optional[list[str]]=None
+    color:Optional[Dict[str,str]]=None
+    color_details:Optional[str]=None
     class Config:
         orm_mode=True
 
@@ -351,6 +353,8 @@ class OrderCreation(BaseModel):
     filler:Optional[Dict[str,str]]=None
     packaging:Optional[int]=None
     images:Optional[list[str]]=None
+    color:Optional[Dict[str,str]]=None
+    color_details:Optional[str]=None
 
 
 

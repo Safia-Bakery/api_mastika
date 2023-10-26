@@ -195,7 +195,10 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
                          long=form_data.long,
                          complexity =form_data.complexity,
                          packaging=form_data.packaging,
-                         images=form_data.images)
+                         images=form_data.images,
+                         color=form_data.color,
+                         color_details=form_data.color_details)
+
 
     db.add(query)
     db.commit()

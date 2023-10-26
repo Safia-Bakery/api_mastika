@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String,ForeignKey,Float,DateTime,Boolean,BIGINT,Table,VARCHAR,CHAR,ARRAY
+from sqlalchemy import Column, Integer, String,ForeignKey,Float,DateTime,Boolean,BIGINT,Table,VARCHAR,CHAR,ARRAY,JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from datetime import datetime
@@ -81,6 +81,8 @@ class Order(Base):
     packaging = Column(Integer,nullable=True)
     order_fill = relationship('OrderFilling',back_populates='fill_order')
     images = Column(ARRAY(String),nullable=True)
+    color = Column(JSON,nullable=True)
+    color_details = Column(String,nullable=True)
 
 
 
