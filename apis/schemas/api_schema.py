@@ -160,15 +160,15 @@ class GetSubCatWithId(BaseModel):
         orm_mode=True
 
 class FillingAddGet(BaseModel):
-    name:str
-    category_id:int
-    ptype:int
+    name:Optional[str]=None
+    category_id:Optional[int]=None
+    ptype:Optional[int]=None
     class Config:
         orm_mode=True
 
 
 
-class       FillingGet(BaseModel):
+class FillingGet(BaseModel):
     id:int
     name:str
     category_id:int
@@ -189,8 +189,8 @@ class GetCategoryWithId(BaseModel):
     name:Optional[str]=None
     id:Optional[int]=None
     status:int
-    c_filling:Optional[FillingAddGet]=None
-    category_vs_subcategory:list[GetSubCatWithId]
+    c_filling:Optional[list[FillingGet]]=None
+    category_vs_subcategory:list[GetSubCatWithId]=None
     class Config:
         orm_mode=True
 
