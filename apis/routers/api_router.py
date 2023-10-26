@@ -173,7 +173,7 @@ async def get_category_with_id(id:int,db:Session=Depends(get_db),request_user:Us
 }
 """
 
-@api_router.post('/v1/orders')
+@api_router.post('/v1/orders',response_model=api_schema.GetOrdervsId)
 async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     #form_data = await request.form()
     #category_id = form_data['category_id']
