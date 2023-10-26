@@ -38,17 +38,20 @@ async def create_category(name:Annotated[str,Form()],image:UploadFile = File(Non
     return {'success':True,'message':'this api currently inactive you data  will not be added to category list'}
 
 @api_router.post('/v1/image/upload')
-async def image_upload(image:UploadFile,db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
-    if image:
-        #for file in image:
-        folder_name = f"files/{generate_random_filename()+image.filename}"
+async def image_upload(image:list[UploadFile],db:Session=Depends(get_db),request_user: User = Depends(get_current_user)):
+    image_list = []
+    for i in image:
+            #for file in image:
+        folder_name = f"files/{generate_random_filename()+i.filename}"
+        image_list.append(folder_name)
         with open(folder_name, "wb") as buffer:
             while True:
-                chunk = await image.read(1024)
+                chunk = await i.read(1024)
                 if not chunk:
                     break
                 buffer.write(chunk)
-    return folder_name
+
+    return {'images':image_list}
 
 
 @api_router.get('/v1/category',response_model=list[api_schema.GetCategory])
@@ -187,10 +190,9 @@ async def get_all_typeofdata(form_data:api_schema.OrderCreation,db:Session=Depen
 
     order_cr = queries.create_order(db=db,user_id=request_user.id,form_data=form_data)
     if order_cr:
-        
         if form_data.filler is not None:
             for key,item in form_data.filler.items():
-                query = queries.add_order_filling(db=db,order_id=order_cr.id,filling_id=key,floor=item['floor'])
+                query = queries.add_order_filling(db=db,order_id=order_cr.id,filling_id=key,floor=item)
     
     #for field_name,field_value in form_data.items():
     #    
