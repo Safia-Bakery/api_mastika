@@ -58,6 +58,7 @@ class Users(Base):
     user_vs_order = relationship('Order',back_populates='order_vs_user')
     role_id = Column(Integer,ForeignKey("roles.id"),nullable=True)
     user_role = relationship('Roles',back_populates='role_user')
+    tel_id = Column(BIGINT,nullable=True)
 
 
 
