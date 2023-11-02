@@ -293,7 +293,7 @@ def getOrderList(db:Session,status,cake,is_delivery,created_at,branch_id):
         query = query.filter(cast(models.Order.created_at,Date)==created_at)
     if branch_id is not None:
         query = query.filter(models.Departments.branch_id==branch_id)
-    return query.all()
+    return query.order_by(models.Departments.id.desc()).all()
 
 
 
