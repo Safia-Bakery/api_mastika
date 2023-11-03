@@ -277,6 +277,8 @@ class GetOrdervsId(BaseModel):
     images:Optional[list[str]]=None
     color:Optional[Dict[str,str]]=None
     color_details:Optional[str]=None
+    floor:Optional[int]=None
+    portion :Optional[int]=None
     class Config:
         orm_mode=True
 
