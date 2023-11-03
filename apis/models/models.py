@@ -83,6 +83,8 @@ class Order(Base):
     images = Column(ARRAY(String),nullable=True)
     color = Column(JSON,nullable=True)
     color_details = Column(String,nullable=True)
+    floor = Column(Integer,nullable=True)
+    portion = Column(Integer,nullable=True)
 
 
 
@@ -94,6 +96,7 @@ class OrderFilling(Base):
     filling_id = Column(Integer,ForeignKey('fillings.id'))
     filler = relationship('Fillings',back_populates='filler_order')
     floor = Column(Integer,nullable=True)
+
 
 class OrderProducts(Base):
     __tablename__='orderproducts'

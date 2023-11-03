@@ -197,7 +197,9 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
                          packaging=form_data.packaging,
                          images=form_data.images,
                          color=form_data.color,
-                         color_details=form_data.color_details)
+                         color_details=form_data.color_details,
+                         floor=form_data.floor,
+                         portion=form_data.portion)
 
 
     db.add(query)
@@ -249,6 +251,10 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
             query.reject_reason = form_data.reject_reason
         if form_data.complexity is not None:
             query.complexity ==form_data.complexity
+        if form_data.floor is not None:
+            query.floor == form_data.floor
+        if form_data.portion is not None:
+            query.portion == form_data.portion
         db.commit()
         db.refresh(query)
     return query

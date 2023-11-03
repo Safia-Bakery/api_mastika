@@ -355,6 +355,8 @@ class OrderCreation(BaseModel):
     images:Optional[list[str]]=None
     color:Optional[Dict[str,str]]=None
     color_details:Optional[str]=None
+    floor:Optional[int]=None
+    portion :Optional[int]=None
 
 
 
@@ -380,6 +382,8 @@ class OrderUpdate(BaseModel):
     long:Optional[str]=None
     reject_reason:Optional[str]=None
     complexity :Optional[int]=None
+    floor:Optional[int]=None
+    portion :Optional[int]=None
 
 
 class OrderProducts(BaseModel):
