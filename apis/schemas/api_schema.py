@@ -190,7 +190,7 @@ class GetCategoryWithId(BaseModel):
     id:Optional[int]=None
     status:int
     c_filling:Optional[list[FillingGet]]=None
-    category_vs_subcategory:list[GetSubCatWithId]=None
+    category_vs_subcategory:Optional[list[GetSubCatWithId]]=None
     class Config:
         orm_mode=True
 
