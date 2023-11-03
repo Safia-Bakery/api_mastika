@@ -21,7 +21,7 @@ def create_cat(db:Session,name,image):
         return "Error: Unique constraint violation."
 
 def get_category_withid(db:Session,id:int):
-    query = db.query(models.Category).filter(models.Category.id==id).filter(models.SubCategory.status==1).first()
+    query = db.query(models.Category).join(models.SubCategory).filter(models.Category.id==id).filter(models.SubCategory.status==1).first()
     return query
 
 
