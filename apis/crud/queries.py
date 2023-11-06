@@ -199,7 +199,8 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
                          color=form_data.color,
                          color_details=form_data.color_details,
                          floor=form_data.floor,
-                         portion=form_data.portion)
+                         portion=form_data.portion,
+                         is_bot=form_data.is_bot)
 
 
     db.add(query)
@@ -263,6 +264,8 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
             query.images=form_data.images
         if form_data.packaging is not None:
             query.packaging =form_data.packaging
+        if form_data.is_bot is not None:
+            query.is_bot=form_data.is_bot
         db.commit()
         db.refresh(query)
     

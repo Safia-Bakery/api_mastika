@@ -279,6 +279,7 @@ class GetOrdervsId(BaseModel):
     color_details:Optional[str]=None
     floor:Optional[int]=None
     portion :Optional[int]=None
+    is_bot:Optional[int]=None
     class Config:
         orm_mode=True
 
@@ -359,6 +360,7 @@ class OrderCreation(BaseModel):
     color_details:Optional[str]=None
     floor:Optional[int]=None
     portion :Optional[int]=None
+    is_bot:Optional[int]=None
 
 
 
@@ -391,6 +393,7 @@ class OrderUpdate(BaseModel):
     color_details:Optional[str]=None
     images:Optional[list[str]]=None
     packaging:Optional[int]=None
+    is_bot:Optional[int]=None
 
 
 class OrderProducts(BaseModel):
