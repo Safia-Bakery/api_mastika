@@ -386,6 +386,11 @@ class OrderUpdate(BaseModel):
     complexity :Optional[int]=None
     floor:Optional[int]=None
     portion :Optional[int]=None
+    filler:Optional[Dict[str,str]]=None
+    color:Optional[Dict[str,str]]=None
+    color_details:Optional[str]=None
+    images:Optional[list[str]]=None
+    packaging:Optional[int]=None
 
 
 class OrderProducts(BaseModel):

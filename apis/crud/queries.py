@@ -255,6 +255,14 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
             query.floor == form_data.floor
         if form_data.portion is not None:
             query.portion == form_data.portion
+        if form_data.color is not None:
+            query.color ==form_data.color
+        if form_data.color_details is not None:
+            query.color_details==form_data.color_details
+        if form_data.images is not None:
+            query.images=form_data.images
+        if form_data.packaging is not None:
+            query.packaging ==form_data.packaging
         db.commit()
         db.refresh(query)
     return query
