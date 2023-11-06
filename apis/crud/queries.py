@@ -250,19 +250,19 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
         if form_data.reject_reason is not None:
             query.reject_reason = form_data.reject_reason
         if form_data.complexity is not None:
-            query.complexity ==form_data.complexity
+            query.complexity =form_data.complexity
         if form_data.floor is not None:
-            query.floor == form_data.floor
+            query.floor = form_data.floor
         if form_data.portion is not None:
-            query.portion == form_data.portion
+            query.portion = form_data.portion
         if form_data.color is not None:
-            query.color ==form_data.color
+            query.color =form_data.color
         if form_data.color_details is not None:
-            query.color_details==form_data.color_details
+            query.color_details=form_data.color_details
         if form_data.images is not None:
             query.images=form_data.images
         if form_data.packaging is not None:
-            query.packaging ==form_data.packaging
+            query.packaging =form_data.packaging
         db.commit()
         db.refresh(query)
     
