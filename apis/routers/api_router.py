@@ -269,7 +269,7 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
     if query:
         if form_data.filler is not None:
             for key,item in form_data.filler.items():
-                query = queries.add_order_filling(db=db,order_id=query.id,filling_id=item,floor=key)
+                queries.add_order_filling(db=db,order_id=query.id,filling_id=item,floor=key)
     return query
 
 

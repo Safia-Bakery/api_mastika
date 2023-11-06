@@ -265,6 +265,7 @@ def update_order(db:Session,form_data:api_schema.OrderUpdate):
             query.packaging ==form_data.packaging
         db.commit()
         db.refresh(query)
+    
     return query
 
 
