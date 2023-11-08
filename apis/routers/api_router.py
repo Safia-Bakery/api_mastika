@@ -267,7 +267,9 @@ async def getdynamic_values(request:Request,db:Session=Depends(get_db)):#,reques
 async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     query = queries.update_order(db=db,form_data=form_data)
     if query:
+
         if form_data.filler is not None:
+            queries.delete_order_filling(db=db,order_id=query.id)
             for key,item in form_data.filler.items():
                 queries.add_order_filling(db=db,order_id=query.id,filling_id=item,floor=key)
     return query

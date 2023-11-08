@@ -454,3 +454,8 @@ def add_order_filling(db:Session,order_id,filling_id,floor):
     db.add(query)
     db.commit()
     return True
+
+def delete_order_filling(db:Session,order_id):
+    query = db.query(models.OrderFilling).filter(models.OrderFilling.order_id==order_id).delete()
+    db.commit()
+    return True
