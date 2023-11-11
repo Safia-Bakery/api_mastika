@@ -159,6 +159,13 @@ async def iiko_get_cakes(background_task:BackgroundTasks,db:Session=Depends(get_
     background_task.add_task(update_cakes)
     return {"success":True}
 
+@api_router.put('/v1/cakes')
+async def update_cake(form_data:api_schema.CakesUpdate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    query = queries.cake_update(db=db,form_data=form_data)
+    return query
+
+
+
 
 
 @api_router.get('/v1/category/full',response_model=api_schema.GetCategoryWithId)

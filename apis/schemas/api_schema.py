@@ -412,6 +412,12 @@ class OrderProductUpdate(BaseModel):
     floor:Optional[int]=None
     portion:Optional[int]=None
 
+class CakesUpdate(BaseModel):
+    id:UUID
+    status:Optional[int]=None
+    price:Optional[float]=None
+    
+
 
 
 

@@ -459,3 +459,14 @@ def delete_order_filling(db:Session,order_id):
     query = db.query(models.OrderFilling).filter(models.OrderFilling.order_id==order_id).delete()
     db.commit()
     return True
+
+def cake_update(db:Session,form_data:api_schema.CakesUpdate):
+    query = db.query(models.Products).filter(models.Products.id==form_data.id).first()
+    if query:
+        if form_data.status is not None:
+            query.status=form_data.status
+        if form_data.price is not None:
+            query.price=form_data.price
+        db.commit()
+        db.refresh(query)
+    return query
