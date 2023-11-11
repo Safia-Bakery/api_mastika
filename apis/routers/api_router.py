@@ -17,7 +17,7 @@ import re
 from typing import Annotated
 from apis.models import models
 
-mastika  = ['30ed6a72-8771-4c81-91ad-e4b71305858d','d9dadbb0-8b97-4666-b740-fcfa47d11419','05b75ddf-3b87-4d1c-9483-5664f29d2c94','4c169130-114a-4314-989e-c48717ceb4e6','4b35d02b-af33-4175-ab84-c8beb646083b']
+mastika  = ['30ed6a72-8771-4c81-91ad-e4b71305858d','d9dadbb0-8b97-4666-b740-fcfa47d11419','05b75ddf-3b87-4d1c-9483-5664f29d2c94','4c169130-114a-4314-989e-c48717ceb4e6','4b35d02b-af33-4175-ab84-c8beb646083b','bce298d5-e3aa-4b4c-b53f-322bdae63f59']
 api_router = APIRouter()
 
 
