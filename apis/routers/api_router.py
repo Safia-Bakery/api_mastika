@@ -1,5 +1,5 @@
 from apis.schemas import api_schema
-from fastapi import APIRouter
+from fastapi import APIRouter,BackgroundTasks
 from users.utils.user_micro import get_db
 from sqlalchemy.orm import Session
 from fastapi import Depends
@@ -138,24 +138,25 @@ async def update_child_selval(form_data:api_schema.UpdateChildSelVal,db:Session=
     return query
 
 @api_router.put('/v1/iiko/cakes')
-async def iiko_get_cakes(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+async def iiko_get_cakes(background_task:BackgroundTasks,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
     key = authiiko()
     groups = get_groups(key)
-    for i in groups:
-        if i['id'] in mastika:
-            try:
-                queries.add_product_groups(db=db,id=i['id'],code=i['code'],name=i['name'])
-            except:
-                pass
-    data = get_cakes(key)
-    
-    for i in data:
-        if i['parent'] in mastika:
-            try:
-            
-                queries.add_products(db=db,name=i['name'],price=i['defaultSalePrice'],id=i['id'],groud_id=i['parent'],producttype=i['type'])
-            except:
-                pass
+    def update_cakes():
+        for i in groups:
+            if i['id'] in mastika:
+                try:
+                    queries.add_product_groups(db=db,id=i['id'],code=i['code'],name=i['name'])
+                except:
+                    pass
+        data = get_cakes(key)
+        for i in data:
+            if i['parent'] in mastika:
+                try:
+                
+                    queries.add_products(db=db,name=i['name'],price=i['defaultSalePrice'],id=i['id'],groud_id=i['parent'],producttype=i['type'])
+                except:
+                    pass
+    background_task.add_task(update_cakes)
     return {"success":True}
 
 
