@@ -322,7 +322,7 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
 Поставка: #{timestamp.day}{timestamp.month}{timestamp.year}s
         """
         files = [('photo', (f'photo{i + 1}.jpg', open(path, 'rb'))) for i, path in enumerate(query.images)]
-        sendtotelegram(bot_token=BOTTOKEN,chat_id=6083044524,message_text=message,files=files)
+        sendtotelegram(bot_token=BOTTOKEN,chat_id="-1002007959500",message_text=message,files=files)
         
     return query
 
