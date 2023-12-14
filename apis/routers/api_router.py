@@ -302,7 +302,7 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
         
         packaging = [None,'Бесплатная упаковка','платная упаковка']
         timestamp = datetime.strptime(query.deliver_date, '%Y-%m-%d %H:%M:%S.%f%z')
-        message  = f"\
+        message  = f"""
         Заказ: #{query.id}s\n\
         Тип заказа🏃: {is_delivery[query.is_delivery]}\n\
         {address}\n\n\
@@ -315,7 +315,7 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
         {order_product}\n\
         Комментарий: {query.comment}\n\n\
         Поставка: #{timestamp.day}{timestamp.month}{timestamp.year}s
-        "
+        """
         sendtotelegram(bot_token=BOTTOKEN,chat_id=6083044524,message_text=message)
         
     return query
