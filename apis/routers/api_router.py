@@ -298,7 +298,7 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
         palitra_text = f""
         for key,value in dict(query.color).items():
 
-            palitra_text = palitra_text+f"Палитра {key} этаж: {value}"
+            palitra_text = palitra_text+f"Палитра {key} этаж: {value}\n"
         order_product = f""
         for i in query.product_order:
             order_product = order_product+f"{i.order_vs_product.product_r.name}: {i.order_vs_product.name}\n"
