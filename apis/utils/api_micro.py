@@ -66,7 +66,7 @@ def sendtotelegram(bot_token,chat_id,message_text,files):
 
     # Send the request to send the inline keyboard message
     response = requests.post(f'https://api.telegram.org/bot{bot_token}/sendMessage', json=payload,files=files)
-
+    print(response)
     # Check the response status
     if response.status_code == 200:
         return response
