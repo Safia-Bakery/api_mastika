@@ -296,7 +296,9 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
         for i in range(len(query.order_fill)):
             nachin_text+f"Начинка {i+1} этаж: {query.order_fill[i].filler.name}\n"
         palitra_text = f""
+        print(query.color_details)
         for key,value in dict(query.color_details).items():
+
             palitra_text+f"Палитра {key} этаж: {value}"
         order_product = f""
         for i in query.product_order:
