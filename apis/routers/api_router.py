@@ -287,9 +287,11 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
     if form_data.status==1:
         is_delivery = ["Доставка","Самовывоз"]
         if query.is_delivery==1:
-            address = f"Филиал: {query.order_br.branch_dr.name}"
-        else: 
+
             address = f"Aдрес: {query.address}"
+
+        else: 
+            address = f"Филиал: {query.order_br.branch_dr.name}"
         nachin_text = f""
         for i in range(len(query.order_fill)):
             nachin_text+f"Начинка {i+1} этаж: {query.order_fill[i].filler.name}\n"
