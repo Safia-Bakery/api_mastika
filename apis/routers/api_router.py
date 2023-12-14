@@ -9,13 +9,17 @@ from datetime import datetime,date
 from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
 from typing import Optional,Union
-from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups
+from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups,sendtotelegram
 from fastapi import Request,Form,UploadFile,File
 import shutil
 from fastapi_pagination import paginate,Page,add_pagination
 import re
 from typing import Annotated
 from apis.models import models
+import os
+from dotenv import load_dotenv
+load_dotenv()
+BOTTOKEN = os.environ.get('BOT_TOKEN')
 
 mastika  = ['30ed6a72-8771-4c81-91ad-e4b71305858d','d9dadbb0-8b97-4666-b740-fcfa47d11419','05b75ddf-3b87-4d1c-9483-5664f29d2c94','4c169130-114a-4314-989e-c48717ceb4e6','4b35d02b-af33-4175-ab84-c8beb646083b','bce298d5-e3aa-4b4c-b53f-322bdae63f59']
 api_router = APIRouter()
@@ -269,7 +273,7 @@ async def getdynamic_values(request:Request,db:Session=Depends(get_db)):#,reques
         #    pass
     return {'success':True}
 
-
+is_delivery = ["Доставка","Самовывоз"]
 
 @api_router.put('/v1/orders')
 async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
@@ -280,6 +284,40 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
             queries.delete_order_filling(db=db,order_id=query.id)
             for key,item in form_data.filler.items():
                 queries.add_order_filling(db=db,order_id=query.id,filling_id=item,floor=key)
+    if form_data.status==1:
+        is_delivery = ["Доставка","Самовывоз"]
+        if query.is_delivery==1:
+            address = f"Филиал: {query.order_br.branch_dr.name}"
+        else: 
+            address = f"Aдрес: {query.address}"
+        nachin_text = f""
+        for i in range(len(query.order_fill)):
+            nachin_text+f"Начинка {i+1} этаж: {query.order_fill[i].filler.name}\n"
+        palitra_text = f""
+        for i in dict(query.color_details).keys():
+            palitra_text+f"Палитра {i} этаж: {query.color_details[i]}"
+        order_product = f""
+        for i in query.product_order:
+            order_product+f"{i.product_r.name}: {i.name}\n"
+        
+        packaging = [None,'Бесплатная упаковка','платная упаковка']
+        timestamp = datetime.strptime(query.deliver_date, '%Y-%m-%d %H:%M:%S.%f%z')
+        message  = f"\
+        Заказ: #{query.id}s\n\
+        Тип заказа🏃: {is_delivery[query.is_delivery]}\n\
+        {address}\n\n\
+        Направление: {query.order_vs_category.name}\n\
+        Количество порций: {query.portion}\n\
+        Этаж: {len(query.order_fill)}\n\
+        {nachin_text}\
+        {palitra_text}\
+        Упаковка: {packaging[query.packaging]}\n\
+        {order_product}\n\
+        Комментарий: {query.comment}\n\n\
+        Поставка: #{timestamp.day}{timestamp.month}{timestamp.year}s
+        "
+        sendtotelegram(bot_token=BOTTOKEN,chat_id=6083044524,message_text=message)
+        
     return query
 
 
@@ -307,10 +345,6 @@ async def get_one_order(status:Optional[int]=None,cake:Optional[UUID]=None,is_de
     
     query = queries.getOrderList(db=db,status=status,cake=cake,is_delivery=is_delivery,created_at=created_at,branch_id=branch_id)
     return paginate(query)
-    
-
-
-
 
 
 @api_router.put('/v1/iiko/departments',)

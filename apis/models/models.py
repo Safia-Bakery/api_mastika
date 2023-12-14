@@ -87,6 +87,7 @@ class Order(Base):
     portion = Column(Integer,nullable=True)
     is_bot = Column(Integer,nullable=True,default=1)
     
+    
 
 
 
@@ -232,6 +233,8 @@ class Products(Base):
     product_r = relationship('Groups',back_populates='group_r')
     price = Column(Float,nullable=True)
     product_vs_order = relationship('OrderProducts',back_populates='order_vs_product')
+
+
 
 
 

@@ -354,7 +354,7 @@ class OrderCreation(BaseModel):
     long:Optional[str]=None
     complexity:Optional[int]=None
     filler:Optional[Dict[str,str]]=None
-    packaging:Optional[int]=None
+    packaging:Optional[int]=1
     images:Optional[list[str]]=None
     color:Optional[Dict[str,str]]=None
     color_details:Optional[str]=None

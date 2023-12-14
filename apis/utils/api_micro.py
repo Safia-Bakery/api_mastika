@@ -13,7 +13,6 @@ BASE_URL = os.environ.get('BASE_URL')
 
 def authiiko():
     data  = requests.get(f"{BASE_URL}/resto/api/auth?login={LOGIN_IIKO}&pass={PASSWORD_IIKO}")
-
     key = data.text
     return key
 
@@ -29,37 +28,47 @@ def get_cakes(key):
 
 
 def generate_random_filename(length=30):
-    # Define the characters you want to use in the random filename
     characters = string.ascii_letters + string.digits
-
-    # Generate a random filename of the specified length
     random_filename = ''.join(random.choice(characters) for _ in range(length))
-
     return random_filename
 
 
 
 def list_departments(key):
-
     departments = requests.get(f"{BASE_URL}/resto/api/corporation/departments?key={key}")
-
-
     root = ET.fromstring(departments.content)
     corporate_item_dtos = root.findall('corporateItemDto')
-
     names = [[item.find('name').text, item.find('id').text] for item in corporate_item_dtos]
     return names
 
 
 
 def list_stores(key):
-
     departments = requests.get(f"{BASE_URL}/resto/api/corporation/stores?key={key}")
-
-
     root = ET.fromstring(departments.content)
     corporate_item_dtos = root.findall('corporateItemDto')
 
     names = [[item.find('name').text, item.find('id').text,item.find('parentId').text] for item in corporate_item_dtos]
     return names
 
+
+
+def sendtotelegram(bot_token,chat_id,message_text):
+    
+
+    # Create the request payload
+    payload = {
+        'chat_id': chat_id,
+        'text': message_text,
+        #'reply_markup': keyboard,
+        'parse_mode': 'HTML'
+    }
+
+    # Send the request to send the inline keyboard message
+    response = requests.post(f'https://api.telegram.org/bot{bot_token}/sendMessage', json=payload,)
+
+    # Check the response status
+    if response.status_code == 200:
+        return response
+    else:
+        return False
