@@ -285,7 +285,7 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
             for key,item in form_data.filler.items():
                 queries.add_order_filling(db=db,order_id=query.id,filling_id=item,floor=key)
     if form_data.status==1:
-        is_delivery = ["Доставка","Самовывоз"]
+        is_delivery = ["Самовывоз","Доставка"]
         if query.is_delivery==1:
 
             address = f"Aдрес: {query.address}"
@@ -294,14 +294,14 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
             address = f"Филиал: {query.order_br.branch_dr.name}"
         nachin_text = f""
         for i in range(len(query.order_fill)):
-            nachin_text+f"Начинка {i+1} этаж: {query.order_fill[i].filler.name}\n"
+            nachin_text = nachin_text+f"Начинка {i+1} этаж: {query.order_fill[i].filler.name}\n"
         palitra_text = f""
         for key,value in dict(query.color).items():
 
-            palitra_text+f"Палитра {key} этаж: {value}"
+            palitra_text = palitra_text+f"Палитра {key} этаж: {value}"
         order_product = f""
         for i in query.product_order:
-            order_product+f"{i.order_vs_product.product_r.name}: {i.order_vs_product.name}\n"
+            order_product = order_product+f"{i.order_vs_product.product_r.name}: {i.order_vs_product.name}\n"
         
         packaging = [None,'Бесплатная упаковка','платная упаковка']
         timestamp = datetime.strptime(str(query.deliver_date), '%Y-%m-%d %H:%M:%S%z')
