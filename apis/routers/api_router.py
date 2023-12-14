@@ -305,10 +305,13 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
             timestamp = datetime.strptime(str(query.deliver_date), "%Y-%m-%d %H:%M:%S.%f%z")
         except:
             timestamp = datetime.strptime(str(query.deliver_date), "%Y-%m-%d %H:%M:%S%z")
-
+        created_at = datetime.strptime(str(query.created_at),"%Y-%m-%d %H:%M:%S.%f%z")
         message  = f"""Заказ: #{query.id}s\n\
 Тип заказа🏃: {is_delivery[query.is_delivery]}\n\
 {address}\n\n\
+Дата заказа: {created_at.day}.{created_at.month}.{created_at.year} {created_at.hour}:{created_at.minute}\n\
+Номер клиента: {query.phone_number}\n\
+Номер менеджера: {query.order_vs_user.phone_number}\n\n\
 Направление: {query.order_vs_category.name}\n\
 Количество порций: {query.portion}\n\
 Этаж: {len(query.order_fill)}\n\
