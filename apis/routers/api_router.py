@@ -273,7 +273,6 @@ async def getdynamic_values(request:Request,db:Session=Depends(get_db)):#,reques
         #    pass
     return {'success':True}
 
-is_delivery = ["Доставка","Самовывоз"]
 
 @api_router.put('/v1/orders')
 async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
@@ -303,7 +302,6 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
         for i in query.product_order:
             order_product = order_product+f"{i.order_vs_product.product_r.name}: {i.order_vs_product.name}\n"
         
-        packaging = [None,'Бесплатная упаковка','платная упаковка']
         timestamp = datetime.strptime(str(query.deliver_date), '%Y-%m-%d %H:%M:%S%z')
         message  = f"""Заказ: #{query.id}s\n\
 Тип заказа🏃: {is_delivery[query.is_delivery]}\n\
@@ -313,12 +311,12 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
 Этаж: {len(query.order_fill)}\n\
 {nachin_text}\
 {palitra_text}\
-Упаковка: {packaging[query.packaging]}\n\
 {order_product}\n\
 Комментарий: {query.comment}\n\n\
 Поставка: #{timestamp.day}{timestamp.month}{timestamp.year}s
         """
-        sendtotelegram(bot_token=BOTTOKEN,chat_id=6083044524,message_text=message)
+        files = [('photo', (f'photo{i + 1}.jpg', open(path, 'rb'))) for i, path in enumerate(list[query.images])]
+        sendtotelegram(bot_token=BOTTOKEN,chat_id=6083044524,message_text=message,files=files)
         
     return query
 

@@ -53,7 +53,7 @@ def list_stores(key):
 
 
 
-def sendtotelegram(bot_token,chat_id,message_text):
+def sendtotelegram(bot_token,chat_id,message_text,files):
     
 
     # Create the request payload
@@ -65,7 +65,7 @@ def sendtotelegram(bot_token,chat_id,message_text):
     }
 
     # Send the request to send the inline keyboard message
-    response = requests.post(f'https://api.telegram.org/bot{bot_token}/sendMessage', json=payload,)
+    response = requests.post(f'https://api.telegram.org/bot{bot_token}/sendMessage', json=payload,files=files)
 
     # Check the response status
     if response.status_code == 200:
