@@ -304,7 +304,7 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
             order_product+f"{i.order_vs_product.product_r.name}: {i.order_vs_product.name}\n"
         
         packaging = [None,'Бесплатная упаковка','платная упаковка']
-        timestamp = datetime.strptime(str(query.deliver_date), '%Y-%m-%d %H:%M:%S.%f%z')
+        timestamp = datetime.strptime(str(query.deliver_date), '%Y-%m-%d %H:%M:%S%z')
         message  = f"""
         Заказ: #{query.id}s\n\
         Тип заказа🏃: {is_delivery[query.is_delivery]}\n\
