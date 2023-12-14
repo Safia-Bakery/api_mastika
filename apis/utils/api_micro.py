@@ -59,9 +59,9 @@ def sendtotelegram(bot_token,chat_id,message_text,files):
     # Create the request payload
     payload = {
         'chat_id': chat_id,
-        'text': message_text,
+        'caption': message_text,
         #'reply_markup': keyboard,
-        'parse_mode': 'MARKDOWN'
+        #'parse_mode': 'MARKDOWN'
     }
 
     # Send the request to send the inline keyboard message
