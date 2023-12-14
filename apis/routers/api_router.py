@@ -305,19 +305,18 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
         
         packaging = [None,'Бесплатная упаковка','платная упаковка']
         timestamp = datetime.strptime(str(query.deliver_date), '%Y-%m-%d %H:%M:%S%z')
-        message  = f"""
-        Заказ: #{query.id}s\n\
-        Тип заказа🏃: {is_delivery[query.is_delivery]}\n\
-        {address}\n\n\
-        Направление: {query.order_vs_category.name}\n\
-        Количество порций: {query.portion}\n\
-        Этаж: {len(query.order_fill)}\n\
-        {nachin_text}\
-        {palitra_text}\
-        Упаковка: {packaging[query.packaging]}\n\
-        {order_product}\n\
-        Комментарий: {query.comment}\n\n\
-        Поставка: #{timestamp.day}{timestamp.month}{timestamp.year}s
+        message  = f"""Заказ: #{query.id}s\n\
+Тип заказа🏃: {is_delivery[query.is_delivery]}\n\
+{address}\n\n\
+Направление: {query.order_vs_category.name}\n\
+Количество порций: {query.portion}\n\
+Этаж: {len(query.order_fill)}\n\
+{nachin_text}\
+{palitra_text}\
+Упаковка: {packaging[query.packaging]}\n\
+{order_product}\n\
+Комментарий: {query.comment}\n\n\
+Поставка: #{timestamp.day}{timestamp.month}{timestamp.year}s
         """
         sendtotelegram(bot_token=BOTTOKEN,chat_id=6083044524,message_text=message)
         
