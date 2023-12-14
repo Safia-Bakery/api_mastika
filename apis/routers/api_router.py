@@ -9,7 +9,7 @@ from datetime import datetime,date
 from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
 from typing import Optional,Union
-from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups,sendtotelegram
+from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups,sendtotelegram,sendtotelegramwithoutimage
 from fastapi import Request,Form,UploadFile,File
 import shutil
 from fastapi_pagination import paginate,Page,add_pagination
@@ -318,9 +318,11 @@ async def update_order(form_data:api_schema.OrderUpdate,db:Session=Depends(get_d
 Комментарий: {query.comment}\n\n\
 Поставка: #{created_at.day}{created_at.month}{created_at.year}s
         """
-        files = [('photo', (f'photo{i + 1}.jpg', open(path, 'rb'))) for i, path in enumerate(query.images)]
-        sendtotelegram(bot_token=BOTTOKEN,chat_id="-1002007959500",message_text=message,files=files)
-        
+        if query.images:
+            files = [('photo', (f'photo{i + 1}.jpg', open(path, 'rb'))) for i, path in enumerate(query.images)]
+            sendtotelegram(bot_token=BOTTOKEN,chat_id="-1002007959500",message_text=message,files=files)
+        else:
+            sendtotelegramwithoutimage(bot_token=BOTTOKEN,chat_id="-1002007959500",message_text=message,)
     return query
 
 
