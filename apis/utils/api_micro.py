@@ -61,7 +61,7 @@ def sendtotelegram(bot_token,chat_id,message_text,files):
         'chat_id': chat_id,
         'text': message_text,
         #'reply_markup': keyboard,
-        #'parse_mode': 'HTML'
+        'parse_mode': 'MARKDOWN'
     }
 
     # Send the request to send the inline keyboard message
