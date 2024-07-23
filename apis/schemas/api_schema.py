@@ -321,7 +321,6 @@ class Branches_list(BaseModel):
     country :str
     status:int
     is_fabrica:Optional[int]=None
-    department_br:list[Departments_get]
     class Config:
         orm_mode=True 
 
