@@ -172,13 +172,13 @@ def update_child_selvalue(db:Session,form_data:api_schema.UpdateChildSelVal):
 
 
 def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
-    if form_data.department_id is not None:
-        try:
-            department_id = db.query(models.Departments).filter(models.Departments.branch_id==form_data.department_id).first().id
-        except:
-            department_id = None
-    else:
-        department_id = None
+    # if form_data.department_id is not None:
+    #     try:
+    #         department_id = db.query(models.Departments).filter(models.Departments.branch_id==form_data.department_id).first().id
+    #     except:
+    #         department_id = None
+    # else:
+    #     department_id = None
     query = models.Order(order_user=form_data.order_user,phone_number=form_data.phone_number,extra_number=form_data.extra_number,payment_type=form_data.payment_type,
                          firstly_payment=form_data.firstly_payment,
                          is_delivery=form_data.is_delivery,
@@ -188,7 +188,7 @@ def create_order(db:Session,user_id,form_data:api_schema.OrderCreation):
                          apartment=form_data.apartment,
                          home=form_data.home,
                          near_to=form_data.near_to,
-                         department_id=department_id,
+                         branch_id=form_data.department_id,
                          user_id=user_id,
                          category_id=form_data.category_id,
                          lat=form_data.lat,
@@ -318,7 +318,7 @@ def getOrderList(db:Session,status,cake,is_delivery,created_at,branch_id):
 def insert_branches(db:Session,items):
     for item in items:
         try:
-            new_item = models.Branchs(country='Uzbekistan', name=item[0],status=1,id=item[1])
+            new_item = models.Branchs(country='Uzbekistan', name=item['name'],status=1,id=item['id'])
             db.add(new_item)
             db.commit()
             db.refresh(new_item)
@@ -470,3 +470,46 @@ def cake_update(db:Session,form_data:api_schema.CakesUpdate):
         db.commit()
         db.refresh(query)
     return query
+
+
+def insert_terminals(db:Session,form_data):
+    try:
+        query = models.Terminals(name=form_data['terminalGroups'][0]['items'][0]['name'],id=form_data['terminalGroups'][0]['items'][0]['id'],status=1,branch_id=form_data['terminalGroups'][0]['items'][0]['organizationId'])
+        db.add(query)
+        db.commit()
+        db.refresh(query)
+    except Exception as e:
+        print(e)
+        db.rollback()
+    return True
+
+
+def insert_payment_types(db:Session,form_data):
+
+    for i in form_data['paymentTypes']:
+        try:
+            query = models.PaymentMethods(name=i['name'],id=i['id'],status=1,code=i['code'])
+            db.add(query)
+            db.commit()
+            db.refresh(query)
+        except:
+            db.rollback()
+            pass
+
+  
+    return True
+
+
+def insert_order_types(db:Session,form_data):
+
+    for i in form_data['orderTypes'][0]['items']:
+        try:
+
+            query = models.OrderTypes(name=i['name'],id=i['id'],status=1, order_service_type=i['orderServiceType'])
+            db.add(query)
+            db.commit()
+            db.refresh(query)
+        except:
+            db.rollback()
+            pass
+

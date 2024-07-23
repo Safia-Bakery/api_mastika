@@ -68,8 +68,8 @@ class Order(Base):
     apartment =Column(String,nullable=True)
     home = Column(String,nullable=True)
     near_to = Column(String,nullable=True)
-    department_id = Column(UUID(as_uuid=True),ForeignKey('departments.id'),nullable=True)
-    order_br = relationship('Departments',back_populates='department_br')
+    branch_id= Column(UUID(as_uuid=True),ForeignKey('branchs.id'))
+    order_br = relationship('Branchs',back_populates='order')
     user_id = Column(Integer,ForeignKey('users.id'))
     order_vs_user = relationship('Users',back_populates='user_vs_order')
     category_id = Column(Integer,ForeignKey('categories.id'),nullable=True)
@@ -87,9 +87,6 @@ class Order(Base):
     portion = Column(Integer,nullable=True)
     is_bot = Column(Integer,nullable=True,default=1)
     
-    
-
-
 
 class OrderFilling(Base):
     __tablename__ = 'orderfilling'
@@ -198,19 +195,18 @@ class Branchs(Base):
     longtitude = Column(Float,nullable=True)
     country = Column(String,nullable=True)
     status = Column(Integer,default=0)
-    department_br = relationship('Departments',back_populates='branch_dr')
+    terminal = relationship('Terminals',back_populates='branch')
     is_fabrica = Column(Integer,nullable=True)
+    order = relationship('Order',back_populates='order_br')
 
 
 
-class Departments(Base):
-    __tablename__ = 'departments'
+class Terminals(Base):
+    __tablename__ = 'terminals'
     id = Column(UUID(as_uuid=True),primary_key=True,default=uuid.uuid4)
     name = Column(String)
-    department_br = relationship('Order',back_populates='order_br')
     branch_id = Column(UUID(as_uuid=True),ForeignKey('branchs.id'))
-    branch_dr = relationship('Branchs',back_populates='department_br')
-    origin = Column(Integer,default=0)
+    branch = relationship('Branchs',back_populates='terminal')
     status = Column(Integer,default=0)
     #supplier = relationship('Suppliers',back_populates='store')
 
@@ -233,6 +229,32 @@ class Products(Base):
     product_r = relationship('Groups',back_populates='group_r')
     price = Column(Float,nullable=True)
     product_vs_order = relationship('OrderProducts',back_populates='order_vs_product')
+
+
+
+
+class PaymentMethods(Base):
+    __tablename__ = "payment_methods"
+    id = Column(UUID,primary_key=True,index=True)
+    name = Column(String)
+    code = Column(String,nullable=True)
+    status = Column(Integer,default=1)
+    created_at = Column(DateTime(timezone=True),default=func.now())
+    updated_at = Column(DateTime(timezone=True),default=func.now())
+
+
+
+class OrderTypes(Base):
+    __tablename__ = "order_types"
+    id = Column(UUID,primary_key=True,index=True)
+    name = Column(String)
+    order_service_type = Column(String,nullable=True)
+    status = Column(Integer,default=1)
+    created_at = Column(DateTime(timezone=True),default=func.now())
+    updated_at = Column(DateTime(timezone=True),default=func.now())
+
+
+
 
 
 

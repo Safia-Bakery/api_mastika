@@ -9,11 +9,12 @@ from datetime import datetime,date
 from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
 from typing import Optional,Union
-from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups,sendtotelegram,sendtotelegramwithoutimage
+from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups,sendtotelegram,sendtotelegramwithoutimage,iikocloud_payment_types,iikocloud_order_types,iikocloud_terminals,iikocloud_departments,authiikocloud
 from fastapi import Request,Form,UploadFile,File
 import shutil
 from fastapi_pagination import paginate,Page,add_pagination
 import re
+import time
 from typing import Annotated
 from apis.models import models
 import os
@@ -354,15 +355,47 @@ async def get_one_order(status:Optional[int]=None,cake:Optional[UUID]=None,is_de
 
 @api_router.put('/v1/iiko/departments',)
 async def update_departments(db:Session=Depends(get_db),request_user:User=Depends(get_current_user)):
+    cloud_token = authiikocloud()
+
+    department_list = iikocloud_departments(cloud_token)['organizations']
+
+    sample_org_id = department_list[0]['id']
     try:
-        queries.insert_branches(db=db,items=list_departments(authiiko()))
-    except:
+        queries.insert_branches(db=db,items=department_list)
+
+
+    except Exception as e:
+        print('error in departments ' + str(e))
         pass
+
+
     try:
-        queries.insert_departments(db=db,
-                                   items=list_stores(authiiko()))
-    except:
+        for i in department_list:
+            time.sleep(1)
+            terminal_list = iikocloud_terminals(cloud_token,org_id=i['id'])
+            queries.insert_terminals(db=db,form_data=terminal_list)
+
+    except Exception as e:
+        print('error in terminals ' + str(e))
         pass
+
+    try:
+        payment_types = iikocloud_payment_types(cloud_token,sample_org_id)
+        queries.insert_payment_types(db=db,form_data=payment_types)
+
+    except Exception as e:
+        print('error in payment types ' + str(e))
+        pass
+
+    try:
+        order_types = iikocloud_order_types(cloud_token,sample_org_id)
+        queries.insert_order_types(db=db,form_data=order_types)
+    except Exception as e:
+        print('error in order types ' + str(e))
+        pass
+
+
+
     return {'success':True}
 
 

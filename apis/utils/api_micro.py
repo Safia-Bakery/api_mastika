@@ -9,12 +9,45 @@ import xml.etree.ElementTree as ET
 LOGIN_IIKO = os.environ.get('LOGIN_IIKO')
 PASSWORD_IIKO = os.environ.get('PASSWORD_IIKO')
 BASE_URL = os.environ.get('BASE_URL')
+IIKO_CLOUD_API_KEY = os.environ.get('IIKO_CLOUD_API_KEY')
+IIKO_CLOUD_API_URL = os.environ.get('IIKO_CLOUD_API_URL')
+
+
 
 
 def authiiko():
     data  = requests.get(f"{BASE_URL}/resto/api/auth?login={LOGIN_IIKO}&pass={PASSWORD_IIKO}")
     key = data.text
     return key
+
+
+def authiikocloud():
+    data  = requests.post(f"{IIKO_CLOUD_API_URL}/api/1/access_token",json={"apiLogin":IIKO_CLOUD_API_KEY})
+    key = data.json()['token']
+
+    return key
+
+
+def iikocloud_departments(key):
+    data = requests.get(f"{IIKO_CLOUD_API_URL}/api/1/organizations",headers={"Authorization":"Bearer "+key}).json()
+
+    return data
+
+def iikocloud_terminals(key,org_id):
+    data = requests.post(f"{IIKO_CLOUD_API_URL}/api/1/terminal_groups",headers={"Authorization":"Bearer "+key},json={"organizationIds":[org_id]})
+    return data.json()
+
+
+
+def iikocloud_payment_types(key,org_id):
+    data = requests.post(f"{IIKO_CLOUD_API_URL}/api/1/payment_types",headers={"Authorization":"Bearer "+key},json={"organizationIds":[org_id]})
+    return data.json()
+
+
+def iikocloud_order_types(key,org_id):
+    data = requests.post(f"{IIKO_CLOUD_API_URL}/api/1/deliveries/order_types",headers={"Authorization":"Bearer "+key},json={"organizationIds":[org_id]})
+    return data.json()
+
 
 
 def get_groups(key): 

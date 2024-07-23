@@ -270,7 +270,7 @@ class GetOrdervsId(BaseModel):
     lat : Optional[str]=None
     complexity :Optional[int]=None
     long:Optional[str]=None
-    order_br:Optional[GetDepartments]=None
+    order_br:Optional[GetBranchs]=None
     product_order:Optional[list[OrderProductsGet]]=None
     order_fill:Optional[list[OrderFillingGet]]
     packaging:Optional[int]=None

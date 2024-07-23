@@ -1,3 +1,5 @@
+from sqlalchemy.dialects.postgresql import UUID
+
 from sqlalchemy import Column, Integer, String,ForeignKey,Float,DateTime,Boolean,BIGINT,Table
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -39,6 +41,7 @@ class Roles(Base):
     status=Column(Integer,default=1)
     role_permission = relationship('Permissions',back_populates='permission_role')
     role_user = relationship('Users',back_populates='user_role')
+
 
 
 

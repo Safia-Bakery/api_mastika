@@ -14,12 +14,12 @@ class UserService:
         if is_client is not None:
             result = result.filter(Users.is_client ==is_client)
         
-        
+
         return result.all()
     def create_user(self,username,password,phone_number,full_name,status,role_id):
         query = Users(username=username,password=password,phone_number=phone_number,full_name=full_name,status=status,role_id=role_id)
         self.db.add(query)
-        self.db.commit()
+        self.db.commit()                  
         self.db.refresh(query)
         return query
     def get_user(self,username):
