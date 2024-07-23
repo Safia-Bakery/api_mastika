@@ -365,7 +365,6 @@ async def update_departments(db:Session=Depends(get_db),request_user:User=Depend
 
 
     except Exception as e:
-        print('error in departments ' + str(e))
         pass
 
 
@@ -376,7 +375,6 @@ async def update_departments(db:Session=Depends(get_db),request_user:User=Depend
             queries.insert_terminals(db=db,form_data=terminal_list)
 
     except Exception as e:
-        print('error in terminals ' + str(e))
         pass
 
     try:
@@ -384,14 +382,12 @@ async def update_departments(db:Session=Depends(get_db),request_user:User=Depend
         queries.insert_payment_types(db=db,form_data=payment_types)
 
     except Exception as e:
-        print('error in payment types ' + str(e))
         pass
 
     try:
         order_types = iikocloud_order_types(cloud_token,sample_org_id)
         queries.insert_order_types(db=db,form_data=order_types)
     except Exception as e:
-        print('error in order types ' + str(e))
         pass
 
 

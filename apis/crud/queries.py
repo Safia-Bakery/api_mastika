@@ -479,7 +479,6 @@ def insert_terminals(db:Session,form_data):
         db.commit()
         db.refresh(query)
     except Exception as e:
-        print(e)
         db.rollback()
     return True
 
