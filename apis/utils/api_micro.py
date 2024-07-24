@@ -131,7 +131,7 @@ def order_send_iiko(data,product_id):
     dict_tosend['organizationId'] = str(data[0].branch_id)
     dict_tosend['terminalGroupId'] = str(data[0].order_br.terminal[0].id)
     dict_tosend['order'] ={}
-    dict_tosend['order']['phone'] = data[0].phone_number
+    dict_tosend['order']['phone'] = '+'+data[0].phone_number
     dict_tosend['order']['orderTypeId'] = '5b1508f9-fe5b-d6af-cb8d-043af587d5c2'
     dict_tosend['order']['comment'] = data[0].comment
     dict_tosend['order']['completeBefore'] = data[0].deliver_date.strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]
