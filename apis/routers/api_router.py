@@ -278,7 +278,7 @@ async def getdynamic_values(request:Request,db:Session=Depends(get_db)):#,reques
                     '2':'bc3e7b6e-7bf7-4a1d-b2f4-95dc8b929371'
                     }
     if order_detail:
-        product_id = ptype_vsiiko[str(order_detail[0].order_fill[0].ptype)]
+        product_id = ptype_vsiiko[str(order_detail[0].order_fill[0].filler.ptype)]
         order_send_iiko(data=order_detail,product_id=product_id)
 
 
