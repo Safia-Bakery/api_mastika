@@ -138,7 +138,7 @@ def order_send_iiko(data,product_id):
     dict_tosend['order']['customer'] = {}
     dict_tosend['order']['customer']['name'] = data[0].order_user
     dict_tosend['order']['items'] = []
-    dict_tosend['order']['items'].append({"type": "Prodsduct","amount": 1,'productId':product_id,"productSizeId": None,"comment": "string"})
+    dict_tosend['order']['items'].append({"type": "Product","amount": 1,'productId':product_id,"productSizeId": None,"comment": "string"})
     token = authiikocloud()
     data = requests.post(f"{IIKO_CLOUD_API_URL}/api/1/deliveries/create",headers={"Authorization":"Bearer "+token},json=dict_tosend)
     print(data.json())
