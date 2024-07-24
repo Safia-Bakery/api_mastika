@@ -9,7 +9,7 @@ from datetime import datetime,date
 from users.schemas.user_schema import User
 from users.utils.user_micro import get_current_user
 from typing import Optional,Union
-from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups,sendtotelegram,sendtotelegramwithoutimage,iikocloud_payment_types,iikocloud_order_types,iikocloud_terminals,iikocloud_departments,authiikocloud
+from apis.utils.api_micro import authiiko,get_cakes,generate_random_filename,list_departments,list_stores,get_groups,sendtotelegram,sendtotelegramwithoutimage,iikocloud_payment_types,iikocloud_order_types,iikocloud_terminals,iikocloud_departments,authiikocloud,order_send_iiko
 from fastapi import Request,Form,UploadFile,File
 import shutil
 from fastapi_pagination import paginate,Page,add_pagination
@@ -272,6 +272,16 @@ async def getdynamic_values(request:Request,db:Session=Depends(get_db)):#,reques
                         queries.create_value_order(db=db,table=table_data)
         #except:
         #    pass
+    order_detail = queries.get_order_with_id(db=db,id=order_id)
+    ptype_vsiiko = {'0':"c514deb0-e2a2-4f19-987d-b204f544a0c9",
+                    '1':'bc3e7b6e-7bf7-4a1d-b2f4-95dc8b929371',
+                    '2':'bc3e7b6e-7bf7-4a1d-b2f4-95dc8b929371'
+                    }
+    if order_detail:
+        product_id = ptype_vsiiko[str(order_detail[0].order_fill[0].ptype)]
+        order_send_iiko(data=order_detail,product_id=product_id)
+
+
     return {'success':True}
 
 

@@ -123,3 +123,23 @@ def sendtotelegramwithoutimage(bot_token,chat_id,message_text):
         return response
     else:
         return False
+
+
+
+def order_send_iiko(data,product_id):
+    dict_tosend = {}
+    dict_tosend['organizationId'] = data[0].branch_id
+    dict_tosend['terminalGroupId'] = data[0].order_br.terminal[0].id
+    dict_tosend['order'] ={}
+    dict_tosend['order']['phone'] = data[0].phone_number
+    dict_tosend['order']['orderTypeId'] = '5b1508f9-fe5b-d6af-cb8d-043af587d5c2'
+    dict_tosend['order']['comment'] = data[0].comment
+    dict_tosend['order']['completeBefore'] = data[0].deliver_date
+    dict_tosend['order']['customer'] = {}
+    dict_tosend['order']['customer']['name'] = data[0].order_user
+    dict_tosend['order']['items'] = []
+    dict_tosend['order']['items'].append({"type": "Product","amount": 1,'productId':product_id,"productSizeId": None,"comment": "string"})
+    token = authiikocloud()
+    data = requests.post(f"{IIKO_CLOUD_API_URL}/api/1/deliveries/create",headers={"Authorization":"Bearer "+token},json=dict_tosend)
+    print(data.json())
+    return True
