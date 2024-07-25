@@ -86,6 +86,7 @@ class Order(Base):
     floor = Column(Integer,nullable=True)
     portion = Column(Integer,nullable=True)
     is_bot = Column(Integer,nullable=True,default=1)
+    price = Column(Float,nullable=True)
     
 
 class OrderFilling(Base):

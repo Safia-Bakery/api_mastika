@@ -280,6 +280,7 @@ class GetOrdervsId(BaseModel):
     floor:Optional[int]=None
     portion :Optional[int]=None
     is_bot:Optional[int]=None
+    price:Optional[float]=None
     class Config:
         orm_mode=True
 
@@ -360,6 +361,7 @@ class OrderCreation(BaseModel):
     floor:Optional[int]=None
     portion :Optional[int]=None
     is_bot:Optional[int]=None
+    price:Optional[float]=None
 
 
 
@@ -393,6 +395,7 @@ class OrderUpdate(BaseModel):
     images:Optional[list[str]]=None
     packaging:Optional[int]=None
     is_bot:Optional[int]=None
+    price :Optional[float]=None
 
 
 class OrderProducts(BaseModel):
